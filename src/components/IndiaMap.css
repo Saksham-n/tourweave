@@ -1,0 +1,218 @@
+:root {
+    --bg-color: #fff3e0;
+    --card-bg: #ffffff;
+    --text-primary: #e65100;
+    --text-secondary: #ef6c00;
+    
+    /* Map Colors (Saffron/India) */
+    --map-fill: #ffcc80; 
+    --map-hover: #ef6c00;
+    --map-stroke: #fff3e0;
+    
+    /* Buttons */
+    --btn-gallery: #e65100;
+    --btn-planner: #1b5e20;
+}
+
+/* Removed global body style to prevent conflicts */
+.india-map-container {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Minimalist Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+}
+::-webkit-scrollbar-thumb {
+    background: #07413c;
+    border-radius: 4px;
+}
+
+.dashboard-card {
+    width: 100%;
+    max-width: 1400px;
+    height: 95vh;
+    background: var(--card-bg);
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.leaflet-container .leaflet-control-attribution {
+    display: none;
+}
+
+/* Left Side - Map */
+.map-section {
+    flex: 1.5;
+    background: rgba(255, 204, 128, 0.1);
+    position: relative;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#indiaMap {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 1;
+}
+
+/* Right Side - Content */
+.content-section {
+    flex: 1;
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+}
+
+.content-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-align: left;
+    flex-shrink: 0;
+}
+
+.featured-image-container {
+    width: 100%;
+    height: 235px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.featured-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.featured-image-container:hover .featured-image {
+    transform: scale(1.05);
+}
+
+.district-info {
+    flex: 1;
+    text-align: left;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.district-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.district-desc {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+/* Footer Controls */
+.footer-controls {
+    margin-top: 20px;
+    padding-top: 20px;
+    flex-shrink: 0;
+}
+
+.custom-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+    color: #ccc;
+}
+
+.custom-divider::before, .custom-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e0e0e0;
+    margin: 0 15px;
+}
+
+.custom-divider i {
+    color: var(--map-hover);
+    font-size: 1.2rem;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.pill-btn {
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'Lato', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pill-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-gallery {
+    background-color: var(--btn-gallery);
+    color: white;
+}
+
+.btn-planner {
+    background-color: var(--btn-planner);
+    color: white;
+}
+
+@media (max-width: 1170px) {
+    .dashboard-card {
+        flex-direction: column-reverse;
+        height: auto;
+    }
+    .map-section {
+        height: 500px;
+        width: 100%;
+    }
+    .content-section {
+        width: 100%;
+        padding: 30px;
+    }
+}
