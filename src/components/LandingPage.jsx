@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { logout } from '../services/auth/authService';
+import AuthModal from './AuthModal';
 import './LandingPage.css';
 
 const translations = {
@@ -131,6 +134,11 @@ const LandingPage = () => {
   const [lang, setLang] = useState('en');
   const [isNavVisible, setIsNavVisible] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  
+  // Auth Modal State
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { user } = useAuth();
+  
   const navigate = useNavigate();
   const location = useLocation();
   const t = translations[lang];
@@ -160,7 +168,15 @@ const LandingPage = () => {
         }, 0);
       }
     }
-  }, [location]);
+    
+    // Auto-open Auth modal if redirected from a Protected Route
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('auth') === 'open') {
+      setIsAuthOpen(true);
+      // Clean up the URL to just /
+      navigate('/', { replace: true });
+    }
+  }, [location, navigate]);
 
   // Helper to render HTML strings safely (for <br> tags in translations)
   const renderHTML = (html) => ({ __html: html });
@@ -180,24 +196,65 @@ const LandingPage = () => {
           <div className="logo">TourWeave</div>
           <div className="nav-links">
             <a href="#destinations">{t.nav_explore}</a>
+            {user && (
+              <a href="/trips" onClick={(e) => { e.preventDefault(); navigate('/trips'); }}>
+                My Trips
+              </a>
+            )}
             <a href="#contact-form">{t.nav_contact}</a>
           </div>
           
-          {/* Language Selector */}
-          <div className={`custom-select lang-dropdown ${isLangOpen ? 'active' : ''}`}>
-            <div className="dropdown-trigger" onClick={() => setIsLangOpen(!isLangOpen)}>
-              <svg className="location-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '5px' }}>
-                  <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="white"/>
-              </svg>
-              <span>{lang === 'en' ? 'EN' : 'HI'}</span>
-              <i className="fa-solid fa-chevron-down" style={{ fontSize: '0.7rem', marginLeft: '5px' }}></i>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            {/* Language Selector */}
+            <div className={`custom-select lang-dropdown ${isLangOpen ? 'active' : ''}`}>
+              <div className="dropdown-trigger" onClick={() => setIsLangOpen(!isLangOpen)}>
+                <svg className="location-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '5px' }}>
+                    <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="white"/>
+                </svg>
+                <span>{lang === 'en' ? 'EN' : 'HI'}</span>
+                <i className="fa-solid fa-chevron-down" style={{ fontSize: '0.7rem', marginLeft: '5px' }}></i>
+              </div>
+              <div className="dropdown-content">
+                <div className="dropdown-option" onClick={() => { setLang('en'); setIsLangOpen(false); }}>English</div>
+                <div className="dropdown-option" onClick={() => { setLang('hi'); setIsLangOpen(false); }}>Hindi</div>
+              </div>
             </div>
-            <div className="dropdown-content">
-              <div className="dropdown-option" onClick={() => { setLang('en'); setIsLangOpen(false); }}>English</div>
-              <div className="dropdown-option" onClick={() => { setLang('hi'); setIsLangOpen(false); }}>Hindi</div>
-            </div>
+
+            {/* Auth Injection */}
+            {user ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <span 
+                  onClick={() => navigate('/profile')} 
+                  style={{ color: 'white', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', borderBottom: '1px solid transparent', paddingBottom: '2px', transition: '0.3s' }}
+                  onMouseEnter={e => e.currentTarget.style.borderBottomColor = 'white'}
+                  onMouseLeave={e => e.currentTarget.style.borderBottomColor = 'transparent'}
+                  title="Manage your Travel DNA & Profile"
+                >
+                  Hi, {user.user_metadata?.display_name || 'Adventurer'}!
+                </span>
+                <button 
+                  onClick={async () => { await logout(); window.location.reload(); }} 
+                  style={{ background: 'rgba(255,255,255,0.2)', color: 'white', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '20px', padding: '6px 16px', cursor: 'pointer', transition: '0.3s' }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <button 
+                className="pill-btn orange" 
+                style={{ padding: '8px 24px', margin: 0 }} 
+                onClick={() => setIsAuthOpen(true)}
+              >
+                Join Now
+              </button>
+            )}
           </div>
         </nav>
+
+        {/* Auth Modal Overlay */}
+        <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
         <div className="hero-content">
           <div className="hero-text">

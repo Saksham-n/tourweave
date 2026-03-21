@@ -1,0 +1,182 @@
+.trips-page-container {
+    min-height: 100vh;
+    width: 100vw;
+    background-image: url('https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=1768&auto=format&fit=crop'); /* Kochi aesthetic backdrop */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Background dark glass overlay */
+.trips-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(11, 88, 81, 0.4); /* Faded teal/olive overlay */
+    backdrop-filter: blur(12px);
+    z-index: 1;
+}
+
+/* Floating Content Wrapper */
+.trips-wrapper {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header & Typography */
+.trips-hero-text {
+    text-align: center;
+    color: white;
+    margin: 4rem 0 3rem 0;
+    padding: 0 5%;
+}
+.trips-hero-text h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+}
+.trips-hero-text p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* The Trip Spawner UI */
+.trip-spawner {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    max-width: 650px;
+    margin: 0 auto 5rem auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    width: 90%;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+}
+.trip-spawner input {
+    flex: 1;
+    padding: 1.2rem;
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-family: inherit;
+    outline: none;
+    transition: 0.3s;
+    background: #F8F8F8;
+    color: #333;
+}
+.trip-spawner input:focus {
+    border-color: #0b5851;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(11,88,81,0.1);
+}
+.trip-spawner button {
+    background: #0b5851;
+    color: white;
+    border: none;
+    padding: 1.2rem 2.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+.trip-spawner button:hover { background: #07413c; }
+.trip-spawner button:disabled { background: #8bb0ac; cursor: not-allowed; }
+
+/* Bento Grid */
+.trips-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+    padding: 0 5% 5rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.trip-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 200px;
+}
+.trip-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 1);
+    border-color: #0b5851;
+}
+
+.trip-card-header h3 {
+    color: #1a1a1a;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    line-height: 1.2;
+}
+
+.trip-role {
+    display: inline-block;
+    background: #e0f2f1;
+    color: #00796b;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.trip-role.owner { background: #fff3e0; color: #e65100; }
+.trip-role.editor { background: #e3f2fd; color: #1565c0; }
+
+.trip-date {
+    color: #888;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.trip-date i { color: #ccc; }
+
+.empty-trips {
+    text-align: center;
+    grid-column: 1 / -1;
+    color: white;
+    padding: 4rem 2rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+}
+.empty-trips p { font-size: 1.2rem; margin-top: 1rem; opacity: 0.9; }
+
+@media (max-width: 600px) {
+    .trip-spawner { flex-direction: column; padding: 1.5rem; }
+    .trip-spawner input, .trip-spawner button { width: 100%; box-sizing: border-box; }
+    .trips-hero-text h1 { font-size: 2.8rem; }
+}

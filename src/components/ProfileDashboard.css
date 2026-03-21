@@ -1,0 +1,123 @@
+.profile-page-container {
+    min-height: 100vh;
+    width: 100vw;
+    background-image: url('https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1776&auto=format&fit=crop'); /* Agra/Taj aesthetic backdrop */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Background dark glass overlay */
+.profile-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 50, 40, 0.4); /* Faded olive overlay matching brand */
+    backdrop-filter: blur(12px);
+    z-index: 1;
+}
+
+/* Floating Content Wrapper */
+.profile-wrapper {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.profile-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+}
+.profile-logo {
+    color: white; font-weight: 700; font-size: 1.8rem; letter-spacing: 1px;
+    cursor: pointer;
+}
+.profile-back-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white; border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px; padding: 10px 24px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s;
+    backdrop-filter: blur(5px);
+}
+.profile-back-btn:hover { background: rgba(255, 255, 255, 0.25); border-color: rgba(255,255,255,0.6); }
+
+/* Main Grid Layout */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 2rem 5% 5rem 5%;
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.profile-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-header {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+.card-header h2 {
+    color: #1a1a1a;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.card-header p {
+    color: #666; font-size: 0.95rem; margin-top: 0.5rem; line-height: 1.5;
+}
+
+/* Form Styles */
+.pro-group {
+    margin-bottom: 1.8rem;
+    display: flex; flex-direction: column; gap: 0.6rem;
+}
+.pro-group label {
+    font-weight: 700; color: #444; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.8px;
+}
+.pro-input, .pro-select {
+    width: 100%; padding: 1.2rem; border: 1px solid #E5E5E5; border-radius: 12px;
+    font-family: inherit; font-size: 1rem; background: #F8F8F8; color: #333;
+    transition: 0.2s; box-sizing: border-box;
+}
+.pro-textarea { resize: vertical; min-height: 120px; }
+.pro-input:focus, .pro-select:focus {
+    border-color: #1B803A; background: #fff; outline: none; box-shadow: 0 0 0 3px rgba(27, 128, 58, 0.1);
+}
+
+/* Save Buttons */
+.pro-save-btn {
+    width: 100%; padding: 1.2rem; background: #1B803A; color: white;
+    border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600;
+    cursor: pointer; transition: 0.3s;
+}
+.pro-save-btn:hover { background: #156830; }
+.pro-save-btn:disabled { background: #88c79c; cursor: not-allowed; }
+
+/* Status Messages */
+.pro-msg {
+    margin-top: 1rem; padding: 1rem; border-radius: 8px; font-weight: 500; text-align: center;
+}
+.pro-msg.success { background: #e8f5e9; color: #2e7d32; }
+.pro-msg.error { background: #ffebee; color: #c62828; }
+
+@media (max-width: 960px) {
+    .profile-grid { grid-template-columns: 1fr; }
+}
