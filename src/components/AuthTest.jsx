@@ -118,7 +118,7 @@ const AuthTest = () => {
 
   const handleCreateTrip = async () => {
     if (!newTripName || !newTripName.trim()) {
-      setMessage('Error: Trip name cannot be empty!');
+      setMessage('Your trip needs a name before we can continue!');
       return;
     }
     

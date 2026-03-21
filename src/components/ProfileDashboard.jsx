@@ -103,7 +103,7 @@ const ProfileDashboard = () => {
             >
               My Trips
             </span>
-            <button className="profile-back-btn" onClick={() => navigate('/')}>&larr; Return to Application</button>
+            <button className="profile-back-btn" onClick={() => navigate('/')}>&larr; Home</button>
           </div>
         </nav>
 
@@ -117,12 +117,12 @@ const ProfileDashboard = () => {
             </div>
 
             <div className="pro-group">
-              <label>Avatar / Email</label>
+              <label>Email</label>
               <input type="text" className="pro-input" value={user?.email || ''} disabled style={{ background: '#eee', color: '#888', cursor: 'not-allowed' }}/>
             </div>
 
             <div className="pro-group">
-              <label>Display Name</label>
+              <label>Name</label>
               <input type="text" className="pro-input" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="e.g. Marco Polo" />
             </div>
 

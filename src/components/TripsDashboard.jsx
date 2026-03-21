@@ -27,7 +27,7 @@ const TripsDashboard = () => {
 
   const handleSpawnTrip = async () => {
     if (!newTripName.trim()) {
-      setErrorMsg('Trip name cannot be empty!');
+      setErrorMsg('Your trip needs a name before we can continue!');
       return;
     }
     
@@ -73,7 +73,7 @@ const TripsDashboard = () => {
             >
               My Profile
             </span>
-            <button className="profile-back-btn" onClick={() => navigate('/')}>&larr; Return to Application</button>
+            <button className="profile-back-btn" onClick={() => navigate('/')}>&larr; Home</button>
           </div>
         </nav>
 
@@ -97,7 +97,7 @@ const TripsDashboard = () => {
         
         {errorMsg && (
           <div style={{ color: '#ffcdd2', background: 'rgba(198,40,40,0.8)', padding: '1rem', borderRadius: '12px', textAlign: 'center', margin: '-3rem auto 3rem auto', maxWidth: '600px', backdropFilter: 'blur(5px)' }}>
-            <strong>Error:</strong> {errorMsg}
+            {errorMsg}
           </div>
         )}
 
