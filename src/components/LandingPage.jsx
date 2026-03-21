@@ -172,6 +172,7 @@ const LandingPage = () => {
     // Auto-open Auth modal if redirected from a Protected Route
     const searchParams = new URLSearchParams(location.search);
     if (searchParams.get('auth') === 'open') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsAuthOpen(true);
       // Clean up the URL to just /
       navigate('/', { replace: true });

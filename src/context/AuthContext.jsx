@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await supabase.from('profiles').select('role').eq('id', baseUser.id).single();
       return { ...baseUser, role: data?.role || 'user' };
-    } catch (err) {
+    } catch {
       return { ...baseUser, role: 'user' };
     }
   };

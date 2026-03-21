@@ -10,7 +10,7 @@ const ProfileDashboard = () => {
   const navigate = useNavigate();
 
   // Profile State
-  const [profile, setProfile] = useState(null);
+  const [, setProfile] = useState(null);
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [location, setLocation] = useState('');
@@ -18,7 +18,7 @@ const ProfileDashboard = () => {
   const [savingProf, setSavingProf] = useState(false);
 
   // DNA State
-  const [dna, setDna] = useState(null);
+  const [, setDna] = useState(null);
   const [budget, setBudget] = useState('Moderate');
   const [travelStyle, setTravelStyle] = useState('');
   const [interests, setInterests] = useState('');

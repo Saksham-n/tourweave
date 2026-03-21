@@ -6,7 +6,7 @@ import { createTrip, getUserTrips } from '../services/user/tripService';
 import { useAuth } from '../context/AuthContext';
 
 const AuthTest = () => {
-  const { user, session } = useAuth();
+  const { user } = useAuth();
   
   // Auth state
   const [email, setEmail] = useState('');
@@ -20,7 +20,7 @@ const AuthTest = () => {
   const [editLocation, setEditLocation] = useState('');
 
   // DNA State
-  const [dna, setDna] = useState(null);
+  const [, setDna] = useState(null);
   const [editBudget, setEditBudget] = useState('');
   const [editStyle, setEditStyle] = useState('');
   const [editInterests, setEditInterests] = useState('');
@@ -72,6 +72,7 @@ const AuthTest = () => {
   // Fetch data when user logs in
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadProfile(user.id);
       loadDNA(user.id);
       loadTrips(user.id);
@@ -80,7 +81,6 @@ const AuthTest = () => {
       setDna(null);
       setTrips([]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleSaveProfile = async () => {

@@ -16,6 +16,7 @@ const IndiaMap = () => {
 
   useEffect(() => {
     if (location.state?.targetState) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedState(location.state.targetState);
     }
   }, [location]);

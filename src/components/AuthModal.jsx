@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { registerWithEmail, loginWithEmail, loginWithGoogle, loginWithMagicLink } from '../services/auth/authService';
 import './AuthModal.css';
 
@@ -11,8 +10,6 @@ const AuthModal = ({ isOpen, onClose }) => {
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-  
-  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
