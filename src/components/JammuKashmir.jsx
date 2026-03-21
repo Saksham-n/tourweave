@@ -76,7 +76,7 @@ const JammuKashmir = () => {
   
   const activeImage = activeDistrict 
     ? (districtImages[activeDistrict] || 'https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=No+Image')
-    : '/images/dl.jpg';
+    : '/images/dl.webp';
 
   // Styles specific to JK
   const jkStyles = {
