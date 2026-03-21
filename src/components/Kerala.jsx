@@ -39,9 +39,9 @@ const Kerala = () => {
   const navigate = useNavigate();
 
   const districtImages = {
-    'Kasaragod': '/images/k.jpg',
+    'Kasaragod': '/images/k.',
     'Kannur': '/images/ka.jpeg',
-    'Wayanad': '/images/w.jpg',
+    'Wayanad': '/images/w.',
     'Kozhikode': 'https://via.placeholder.com/400x300/96CEB4/FFFFFF?text=Kozhikode',
     'Malappuram': 'https://via.placeholder.com/400x300/FECA57/FFFFFF?text=Malappuram',
     'Palakkad': 'https://via.placeholder.com/400x300/FF9FF3/FFFFFF?text=Palakkad',
@@ -52,7 +52,7 @@ const Kerala = () => {
     'Alappuzha': 'https://via.placeholder.com/400x300/EE5A24/FFFFFF?text=Alappuzha',
     'Pathanamthitta': 'https://via.placeholder.com/400x300/0ABDE3/FFFFFF?text=Pathanamthitta',
     'Kollam': 'https://via.placeholder.com/400x300/10AC84/FFFFFF?text=Kollam',
-    'Thiruvananthapuram': '/images/t.jpg'
+    'Thiruvananthapuram': '/images/t.'
   };
 
   const districtDescriptions = {
@@ -80,7 +80,7 @@ const Kerala = () => {
   
   const activeImage = activeDistrict 
     ? (districtImages[activeDistrict] || 'https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=No+Image')
-    : '/images/mh.jpg';
+    : '/images/mh.webp';
 
   // Styles specific to Kerala
   const keralaStyles = {
