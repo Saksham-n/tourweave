@@ -23,32 +23,32 @@ const IndiaMap = () => {
   // State Data (Descriptions and Images) from original india.html
   const stateInfo = {
     'Mizoram': {
-      image: '/images/mizoram.jpg',
+      image: '/images/mizoram.webp',
       desc: "Mizoram, the 'Land of the Hill People,' is Northeast India's greenest state with breathtaking hills and lush forests. It boasts incredible biodiversity with over 1,000 orchid species and shares borders with Myanmar and Bangladesh. The state has India's highest literacy rate at over 91% and celebrates unique festivals like Chapchar Kut. Mizo culture features traditional music, dance, and cuisine with bamboo shoots and fermented foods. Despite its remote location, Mizoram is rapidly developing with growing tourism infrastructure.",
       route: null
     },
     'Tamil Nadu': {
-      image: '/images/t.jpg',
+      image: '/images/t.webp',
       desc: "Tamil Nadu, India's southernmost state, is a cradle of Dravidian civilization spanning 2,000 years. Famous for magnificent temples like Brihadeeswarar and Meenakshi, it's a UNESCO World Heritage site. The state leads in IT and automobile industries, with Chennai as India's Silicon Valley equivalent. Its world-renowned cuisine includes dosas, idlis, and spicy curries. Tamil Nadu is a cultural powerhouse, originating Bharatanatyam dance and Carnatic music.",
       route: null
     },
     'Jammu & Kashmir': {
-      image: '/images/jk.jpg',
+      image: '/images/jk.webp',
       desc: "Jammu & Kashmir, northern India's paradise, features majestic Himalayas, serene Kashmir Valley with Dal Lake, and arid Ladakh. It's a haven for adventure tourism including trekking, skiing, and houseboating. The region produces world-famous saffron, apples, and handicrafts. Rich cultural heritage blends Kashmiri, Dogri, and Ladakhi traditions. Known for hospitality, Mughal architecture, and spiritual sites like Vaishno Devi Temple.",
       route: '/jk'
     },
     'Madhya Pradesh': {
-      image: '/images/mp.jpg',
+      image: '/images/mp.webp',
       desc: "Madhya Pradesh, India's 'Heart,' is the second-largest state with ancient history and natural beauty. Home to Khajuraho's UNESCO temples showcasing erotic art, and magnificent Sanchi Stupa. A wildlife paradise with Kanha and Bandhavgarh national parks famous for tiger safaris. Rich tribal culture with 40+ communities and unique art forms. Known for Chanderi sarees and produces major portions of India's pulses and oilseeds.",
       route: '/mp'
     },
     'Goa': {
-      image: '/images/goa.jpg',
+      image: '/images/goa.webp',
       desc: "Goa, India's smallest state, is a tropical paradise with pristine beaches and Portuguese colonial heritage. A 450-year Portuguese colony, it blends Indian and European influences in architecture and cuisine. Renowned for 103 km coastline with beaches like Anjuna, Calangute, and Palolem. Celebrates unique festivals like Carnival and Shigmo with Portuguese flair. Features delicious seafood, vindaloo, feni liquor, and thriving IT industry.",
       route: '/goa'
     },
     'Kerala': {
-      image: '/images/k.jpg',
+      image: '/images/k.webp',
       desc: "Kerala, 'God's Own Country,' is southern India's tropical paradise with natural beauty and high quality of life. Famous for serene backwaters, palm-fringed lagoons, and houseboat cruises called the 'Venice of the East.' Leads in literacy (over 96%) and has India's highest Human Development Index. Pioneer in Ayurveda and wellness tourism with numerous centers. Celebrates Onam festival and features Kathakali dance and Kalaripayattu martial arts.",
       route: '/kerala'
     }
@@ -82,7 +82,7 @@ const IndiaMap = () => {
   // Determine what to show in the side panel
   const activeStateName = hoveredState || selectedState || 'India';
   const activeInfo = stateInfo[activeStateName] || {
-    image: '/images/India.jpg',
+    image: '/images/India.webp',
     desc: "India is a land of diversity, culture, and heritage. Explore the various states and their unique offerings."
   };
 
