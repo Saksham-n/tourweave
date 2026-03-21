@@ -111,7 +111,7 @@ const MadhyaPradesh = () => {
   
   const activeImage = activeDistrict 
     ? (districtImages[activeDistrict] || 'https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=No+Image')
-    : '/images/mp.jpg';
+    : '/images/mp.webp';
 
   // Styles specific to MP
   const mpStyles = {
