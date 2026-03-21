@@ -332,7 +332,7 @@ const LandingPage = () => {
         </div>
 
         <div className="big-banner" id="destinations">
-            <span>{t.banner_1}</span> <img src="/images/India.jpg" className="banner-img" alt="India" /> <span>{t.banner_2}</span>
+            <span>{t.banner_1}</span> <img src="/images/India.webp" className="banner-img" alt="India" /> <span>{t.banner_2}</span>
         </div>
 
         <div className="carousel-section">
@@ -341,7 +341,7 @@ const LandingPage = () => {
                 
                 <div className="carousel-card" onClick={() => navigate('/mp')}>
                     <div className="card-image-box">
-                        <img src="/images/ss.jpg" alt="Madhya Pradesh" />
+                        <img src="/images/ss.webp" alt="Madhya Pradesh" />
                     </div>
                     <div className="card-title">{t.card_mp_title}</div>
                     <div className="card-desc">{t.card_mp_desc}</div>
@@ -349,7 +349,7 @@ const LandingPage = () => {
         
                 <div className="carousel-card" onClick={() => navigate('/jk')}>
                     <div className="card-image-box">
-                        <img src="/images/dl.jpg" alt="Kashmir" />
+                        <img src="/images/dl.webp" alt="Kashmir" />
                     </div>
                     <div className="card-title">{t.card_jk_title}</div>
                     <div className="card-desc">{t.card_jk_desc}</div>
@@ -357,7 +357,7 @@ const LandingPage = () => {
         
                 <div className="carousel-card" onClick={() => navigate('/goa')}>
                     <div className="card-image-box">
-                        <img src="/images/ds.jpg" alt="Goa" />
+                        <img src="/images/ds.webp" alt="Goa" />
                     </div>
                     <div className="card-title">{t.card_goa_title}</div>
                     <div className="card-desc">{t.card_goa_desc}</div>
@@ -365,7 +365,7 @@ const LandingPage = () => {
         
                 <div className="carousel-card" onClick={() => navigate('/kerala')}>
                     <div className="card-image-box">
-                        <img src="/images/mh.jpg" alt="Kerala" />
+                        <img src="/images/mh.webp" alt="Kerala" />
                     </div>
                     <div className="card-title">{t.card_kerala_title}</div>
                     <div className="card-desc">{t.card_kerala_desc}</div>
@@ -383,7 +383,7 @@ const LandingPage = () => {
             </div>
 
             <div className="grid-item card-mp" onClick={() => navigate('/mp')}>
-                <img src="/images/ss.jpg" className="grid-img" alt="MP" />
+                <img src="/images/ss.webp" className="grid-img" alt="MP" />
                 <div className="img-overlay-tag">
                     <i className="fa-regular fa-heart"></i> <span>{t.state_mp}</span>
                 </div>
@@ -391,7 +391,7 @@ const LandingPage = () => {
             </div>
 
             <div className="grid-item card-jk" onClick={() => navigate('/jk')}>
-                <img src="/images/dl.jpg" className="grid-img" alt="JK" />
+                <img src="/images/dl.webp" className="grid-img" alt="JK" />
                 <div className="img-overlay-tag">
                     <i className="fa-solid fa-mountain"></i> <span>{t.state_kashmir}</span>
                 </div>
@@ -399,7 +399,7 @@ const LandingPage = () => {
             </div>
 
             <div className="grid-item card-goa" onClick={() => navigate('/goa')}>
-                <img src="/images/ds.jpg" className="grid-img" alt="Goa" />
+                <img src="/images/ds.webp" className="grid-img" alt="Goa" />
                 <div className="img-overlay-tag">
                     <i className="fa-solid fa-water"></i> <span>{t.state_goa}</span>
                 </div>
@@ -407,7 +407,7 @@ const LandingPage = () => {
             </div>
 
             <div className="grid-item card-kerala" onClick={() => navigate('/kerala')}>
-                <img src="/images/mh.jpg" className="grid-img" alt="Kerala" />
+                <img src="/images/mh.webp" className="grid-img" alt="Kerala" />
                 <div className="img-overlay-tag">
                     <i className="fa-solid fa-leaf"></i> <span>{t.state_kerala}</span>
                 </div>
