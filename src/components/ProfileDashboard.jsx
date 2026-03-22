@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getProfile, updateProfile } from '../services/user/profileService';
 import { getTravelDNA, upsertTravelDNA } from '../services/user/dnaService';
+import { getJournalStats } from '../services/user/journalService';
 import './ProfileDashboard.css';
 
 const ProfileDashboard = () => {
@@ -26,6 +27,9 @@ const ProfileDashboard = () => {
   const [dnaMsg, setDnaMsg] = useState(null);
   const [savingDna, setSavingDna] = useState(false);
 
+  // Journal Stats State
+  const [journalStats, setJournalStats] = useState({ totalEntries: 0, averageSentiment: 0.5, mood: 'neutral' });
+
   useEffect(() => {
     // Escalate to top of page on mount
     window.scrollTo(0, 0);
@@ -48,6 +52,12 @@ const ProfileDashboard = () => {
         setTravelStyle(dData.travel_style || '');
         setInterests((dData.interests || []).join(', '));
         setDestinations((dData.preferred_destinations || []).join(', '));
+      }
+
+      // Load journal stats
+      const statsResult = await getJournalStats(user.id);
+      if (statsResult.success) {
+        setJournalStats(statsResult.data);
       }
     };
 
@@ -102,6 +112,14 @@ const ProfileDashboard = () => {
               onMouseLeave={e => e.currentTarget.style.borderBottomColor = 'transparent'}
             >
               My Trips
+            </span>
+            <span 
+              onClick={() => navigate('/journal')} 
+              style={{ color: 'white', cursor: 'pointer', fontWeight: 600, borderBottom: '1px solid transparent', paddingBottom: '2px', transition: '0.3s' }}
+              onMouseEnter={e => e.currentTarget.style.borderBottomColor = 'white'}
+              onMouseLeave={e => e.currentTarget.style.borderBottomColor = 'transparent'}
+            >
+              Journal
             </span>
             <button className="profile-back-btn" onClick={() => navigate('/')}>&larr; Home</button>
           </div>
@@ -186,6 +204,41 @@ const ProfileDashboard = () => {
               {dnaMsg && <div className={`pro-msg ${dnaMsg.type}`} style={{ margin: 0 }}>{dnaMsg.text}</div>}
               <button className="pro-save-btn" onClick={handleSaveDNA} disabled={savingDna} style={{ background: '#0b5851', margin: 0 }}>
                 {savingDna ? 'Calibrating...' : 'Update AI DNA Matrix'}
+              </button>
+            </div>
+          </div>
+
+          {/* JOURNAL STATS CARD */}
+          <div className="profile-card journal-card">
+            <div className="card-header">
+              <h2>Memory Journal</h2>
+              <p>Track your travel memories and emotional journey.</p>
+            </div>
+
+            <div className="journal-stats">
+              <div className="stat-item">
+                <div className="stat-label">Total Entries</div>
+                <div className="stat-value">{journalStats.totalEntries}</div>
+              </div>
+
+              <div className="stat-item">
+                <div className="stat-label">Average Mood</div>
+                <div className="stat-value" style={{
+                  color: journalStats.mood === 'positive' ? '#10b981' : journalStats.mood === 'negative' ? '#ef4444' : '#f59e0b'
+                }}>
+                  {journalStats.mood}
+                </div>
+              </div>
+
+              <div className="stat-item">
+                <div className="stat-label">Positivity Score</div>
+                <div className="stat-value">{Math.round(journalStats.averageSentiment * 100)}%</div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 'auto' }}>
+              <button className="pro-save-btn" onClick={() => navigate('/journal')} style={{ background: '#1b803a', margin: 0 }}>
+                Open Journal
               </button>
             </div>
           </div>

@@ -118,6 +118,43 @@
 .pro-msg.success { background: #e8f5e9; color: #2e7d32; }
 .pro-msg.error { background: #ffebee; color: #c62828; }
 
+/* Journal Card */
+.journal-card {
+  background: linear-gradient(135deg, rgba(27, 128, 58, 0.05) 0%, rgba(45, 154, 82, 0.05) 100%);
+  border: 1px solid rgba(27, 128, 58, 0.1);
+}
+
+.journal-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1b803a;
+}
+
 @media (max-width: 960px) {
     .profile-grid { grid-template-columns: 1fr; }
+    .journal-stats { grid-template-columns: 1fr; }
 }
