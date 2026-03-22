@@ -10,6 +10,8 @@ import AuthTest from './components/AuthTest';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProfileDashboard from './components/ProfileDashboard';
 import TripsDashboard from './components/TripsDashboard';
+import JournalDashboard from './components/JournalDashboard';
+import ChatCopilot from './components/ChatCopilot';
 
 function App() {
   return (
@@ -29,6 +31,12 @@ function App() {
         <Route path="/trips" element={
           <ProtectedRoute>
             <TripsDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/journal" element={
+          <ProtectedRoute>
+            <JournalDashboard />
           </ProtectedRoute>
         } />
         
@@ -58,6 +66,7 @@ function App() {
           </ProtectedRoute>
         } />
       </Routes>
+      <ChatCopilot />
     </Router>
   );
 }
