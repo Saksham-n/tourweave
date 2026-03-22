@@ -8,32 +8,18 @@ export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Helper to fetch and merge the custom Postgres Role into our base Supabase user object
-  const hydrateUserRole = async (baseUser) => {
-    if (!baseUser) return null;
-    try {
-      const { data } = await supabase.from('profiles').select('role').eq('id', baseUser.id).single();
-      return { ...baseUser, role: data?.role || 'user' };
-    } catch {
-      return { ...baseUser, role: 'user' };
-    }
-  };
-
   useEffect(() => {
     // 1. Get initial session on mount
-    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
-      if (error) console.error('Error getting session:', error);
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      const hydratedUser = await hydrateUserRole(session?.user);
-      setUser(hydratedUser);
+      setUser(session?.user || null);
       setLoading(false);
     });
 
     // 2. Listen to auth changes (login, logout, token refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      const hydratedUser = await hydrateUserRole(session?.user);
-      setUser(hydratedUser);
+      setUser(session?.user || null);
       setLoading(false);
     });
 
