@@ -19,7 +19,10 @@ export const createTrip = async (userId, tripName) => {
     .from('trip_members')
     .insert({ trip_id: trip.id, user_id: userId, role: 'owner' });
 
-  if (memberError) return { trip: null, error: memberError };
+  // If the error is a duplicate key, it means a Supabase PostgreSQL Trigger already automatically added them as an owner!
+  if (memberError && !memberError.message.includes('duplicate key value')) {
+    return { trip: null, error: memberError };
+  }
 
   return { trip, error: null };
 };
