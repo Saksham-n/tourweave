@@ -12,6 +12,7 @@ import ProfileDashboard from './components/ProfileDashboard';
 import TripsDashboard from './components/TripsDashboard';
 import JournalDashboard from './components/JournalDashboard';
 import ChatCopilot from './components/ChatCopilot';
+import PatternDashboard from './components/PatternDashboard';
 
 function App() {
   return (
@@ -37,6 +38,12 @@ function App() {
         <Route path="/journal" element={
           <ProtectedRoute>
             <JournalDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/patterns" element={
+          <ProtectedRoute>
+            <PatternDashboard />
           </ProtectedRoute>
         } />
         

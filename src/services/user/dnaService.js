@@ -37,5 +37,13 @@ export const upsertTravelDNA = async (userId, dnaData) => {
     .select();
 
   if (error) return { dna: null, error };
+  
+  // Fire and forget history snapshot for Pattern Analysis
+  supabase.from('travel_dna_history').insert([
+    { user_id: userId, snapshot: dnaData }
+  ]).then(({ error: histErr }) => {
+    if (histErr) console.warn("Failed to create DNA history snapshot:", histErr);
+  });
+
   return { dna: data?.[0] ?? null, error: null };
 };

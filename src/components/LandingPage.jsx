@@ -202,6 +202,11 @@ const LandingPage = () => {
                 My Trips
               </a>
             )}
+            {user && (
+              <a href="/patterns" onClick={(e) => { e.preventDefault(); navigate('/patterns'); }}>
+                Pattern Analysis
+              </a>
+            )}
             <a href="#contact-form">{t.nav_contact}</a>
           </div>
           
