@@ -1,0 +1,3 @@
+-- Superseded: name-based ledger lives in supabase_migration_expense_names.sql
+-- That file drops this migration’s tables (if present) and recreates the schema without auth.users FKs.
+-- Apply supabase_migration_expense_names.sql on your database (once).

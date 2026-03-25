@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { getProfile, updateProfile } from '../services/user/profileService';
 import { getTravelDNA, upsertTravelDNA } from '../services/user/dnaService';
 import { getJournalStats } from '../services/user/journalService';
+import ExpenseModule from './expense/ExpenseModule';
 import './ProfileDashboard.css';
 
 const ProfileDashboard = () => {
@@ -126,43 +127,8 @@ const ProfileDashboard = () => {
         </nav>
 
         <div className="profile-grid">
-          
-          {/* LEFT CARD: IDENTITY */}
-          <div className="profile-card">
-            <div className="card-header">
-              <h2>Aesthetic Identity</h2>
-              <p>Configure outward-facing representations of your traveler persona across the collaborative platform.</p>
-            </div>
 
-            <div className="pro-group">
-              <label>Email</label>
-              <input type="text" className="pro-input" value={user?.email || ''} disabled style={{ background: '#eee', color: '#888', cursor: 'not-allowed' }}/>
-            </div>
-
-            <div className="pro-group">
-              <label>Name</label>
-              <input type="text" className="pro-input" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="e.g. Marco Polo" />
-            </div>
-
-            <div className="pro-group">
-              <label>Origin Location</label>
-              <input type="text" className="pro-input" value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. New Delhi, India" />
-            </div>
-
-            <div className="pro-group">
-              <label>Adventurer Bio</label>
-              <textarea className="pro-input pro-textarea" value={bio} onChange={e => setBio(e.target.value)} placeholder="Tell the community what drives your wanderlust..."></textarea>
-            </div>
-
-            <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {profMsg && <div className={`pro-msg ${profMsg.type}`} style={{ margin: 0 }}>{profMsg.text}</div>}
-              <button className="pro-save-btn" onClick={handleSaveProfile} disabled={savingProf} style={{ margin: 0 }}>
-                {savingProf ? 'Solidifying...' : 'Commit Identity'}
-              </button>
-            </div>
-          </div>
-
-          {/* RIGHT CARD: TRAVEL DNA */}
+          {/* COLUMN 1: TRAVEL DNA */}
           <div className="profile-card">
             <div className="card-header">
               <h2>Travel DNA Engine</h2>
@@ -208,8 +174,48 @@ const ProfileDashboard = () => {
             </div>
           </div>
 
-          {/* JOURNAL STATS CARD */}
-          <div className="profile-card journal-card">
+          {/* COLUMN 2: AESTHETIC IDENTITY (Preference / profile) */}
+          <div className="profile-card">
+            <div className="card-header">
+              <h2>Aesthetic Identity</h2>
+              <p>Configure outward-facing representations of your traveler persona across the collaborative platform.</p>
+            </div>
+
+            <div className="pro-group">
+              <label>Email</label>
+              <input type="text" className="pro-input" value={user?.email || ''} disabled style={{ background: '#eee', color: '#888', cursor: 'not-allowed' }}/>
+            </div>
+
+            <div className="pro-group">
+              <label>Name</label>
+              <input type="text" className="pro-input" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="e.g. Marco Polo" />
+            </div>
+
+            <div className="pro-group">
+              <label>Origin Location</label>
+              <input type="text" className="pro-input" value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. New Delhi, India" />
+            </div>
+
+            <div className="pro-group">
+              <label>Adventurer Bio</label>
+              <textarea className="pro-input pro-textarea" value={bio} onChange={e => setBio(e.target.value)} placeholder="Tell the community what drives your wanderlust..."></textarea>
+            </div>
+
+            <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {profMsg && <div className={`pro-msg ${profMsg.type}`} style={{ margin: 0 }}>{profMsg.text}</div>}
+              <button className="pro-save-btn" onClick={handleSaveProfile} disabled={savingProf} style={{ margin: 0 }}>
+                {savingProf ? 'Solidifying...' : 'Commit Identity'}
+              </button>
+            </div>
+          </div>
+
+          {/* EXPENSE MODULE (nested 2-card Splitwise-style) */}
+          <div className="profile-expense-slot">
+            <ExpenseModule user={user} />
+          </div>
+
+          {/* JOURNAL — full width row */}
+          <div className="profile-card journal-card profile-card-span-full">
             <div className="card-header">
               <h2>Memory Journal</h2>
               <p>Track your travel memories and emotional journey.</p>
