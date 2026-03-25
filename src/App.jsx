@@ -11,9 +11,9 @@ import AuthTest from './components/AuthTest';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProfileDashboard from './components/ProfileDashboard';
 import TripsDashboard from './components/TripsDashboard';
+import TripDetail from './components/TripDetail';
 import JournalDashboard from './components/JournalDashboard';
 import ChatCopilot from './components/ChatCopilot';
-import Itinerary from "./components/Itinerary";
 
 // ✅ Invite accept page
 import AcceptInvite from "./components/AcceptInvite";
@@ -31,23 +31,22 @@ function App() {
         {/* DO NOT protect this route */}
         <Route path="/accept-invite/:token" element={<AcceptInvite />} />
 
-        {/* Trip Itinerary */}
-        <Route path="/trip/:id" element={
+        {/* Trips & Itinerary Dashboard */}
+        <Route path="/trips" element={
           <ProtectedRoute>
-            <Itinerary />
+            <TripsDashboard />
           </ProtectedRoute>
         } />
 
-        {/* Secure Routes */}
         <Route path="/profile" element={
           <ProtectedRoute>
             <ProfileDashboard />
           </ProtectedRoute>
         } />
 
-        <Route path="/trips" element={
+        <Route path="/trips/:id" element={
           <ProtectedRoute>
-            <TripsDashboard />
+            <TripDetail />
           </ProtectedRoute>
         } />
 

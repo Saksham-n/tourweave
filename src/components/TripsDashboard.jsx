@@ -10,16 +10,23 @@ const TripsDashboard = () => {
   const navigate = useNavigate();
 
   const [trips, setTrips] = useState([]);
-  const [newTripName, setNewTripName] = useState('');
+  const [newTrip, setNewTrip] = useState({
+    name: '',
+    destination: '',
+    start_date: '',
+    end_date: ''
+  });
   const [isSpawning, setIsSpawning] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // ✅ Invite states
+  // ✅ Delete/Invite states
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState(null);
+  const [tripToDelete, setTripToDelete] = useState(null);
   const [inviteEmail, setInviteEmail] = useState('');
 
-  // ✅ NEW: Toast state
+  // ✅ Toast state
   const [toast, setToast] = useState('');
 
   const fetchTrips = async () => {
@@ -33,33 +40,52 @@ const TripsDashboard = () => {
   }, [user]);
 
   const handleSpawnTrip = async () => {
-    if (!newTripName.trim()) {
-      setErrorMsg('Trip name required!');
+    if (!newTrip.name.trim()) {
+      setErrorMsg('Your trip needs a name before we can continue!');
       return;
     }
-
+    
     setIsSpawning(true);
-    const { error } = await createTrip(user.id, newTripName);
-
-    if (error) setErrorMsg(error.message);
-    else {
-      setNewTripName('');
+    setErrorMsg('');
+    
+    const { error } = await createTrip(user.id, newTrip);
+    
+    if (error) {
+      setErrorMsg(error.message);
+    } else {
+      setNewTrip({
+        name: '',
+        destination: '',
+        start_date: '',
+        end_date: ''
+      });
       fetchTrips();
+      setToast("✨ New Trip Created!");
+      setTimeout(() => setToast(""), 3000);
     }
-
+    
     setIsSpawning(false);
   };
 
-  const handleDeleteTrip = async (tripId) => {
-    const { error } = await deleteTrip(tripId);
+  const initiateDelete = (trip) => {
+    setTripToDelete(trip);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!tripToDelete) return;
+    
+    const { error } = await deleteTrip(tripToDelete.id);
+    setShowDeleteModal(false);
 
     if (error) {
       setErrorMsg(error.message);
     } else {
       fetchTrips();
-      setToast("🗑 Trip deleted");
+      setToast("🗑 Trip deleted successfully");
       setTimeout(() => setToast(""), 3000);
     }
+    setTripToDelete(null);
   };
 
   const openInviteModal = (tripId) => {
@@ -96,22 +122,56 @@ const TripsDashboard = () => {
       <div className="trips-overlay"></div>
 
       <div className="trips-wrapper">
+        <nav className="profile-nav">
+          <div className="profile-logo" onClick={() => navigate('/')}>TourWeave</div>
+          <div className="nav-links">
+            <span onClick={() => navigate('/journal')}>Journal</span>
+            <span onClick={() => navigate('/profile')}>Profile</span>
+            <button className="profile-back-btn" onClick={() => navigate('/')}>&larr; Home</button>
+          </div>
+        </nav>
 
         <div className="trips-hero-text">
           <h1>Collaborative Trips</h1>
-          <p>Create trips and invite members</p>
+          <p>Instantiate a new journey and invite travelers.</p>
         </div>
 
-        <div className="trip-spawner">
-          <input
-            type="text"
-            placeholder="Trip name..."
-            value={newTripName}
-            onChange={(e) => setNewTripName(e.target.value)}
-          />
-          <button onClick={handleSpawnTrip}>
-            {isSpawning ? 'Creating...' : 'Create Trip'}
-          </button>
+        <div className="trip-spawner-expanded">
+          <div className="spawner-row">
+            <input 
+              type="text" 
+              placeholder="Trip Name (e.g. Himalayas 2026)" 
+              value={newTrip.name} 
+              onChange={e => { setNewTrip({...newTrip, name: e.target.value}); setErrorMsg(''); }}
+            />
+            <input 
+              type="text" 
+              placeholder="Destination (e.g. Manali, India)" 
+              value={newTrip.destination} 
+              onChange={e => { setNewTrip({...newTrip, destination: e.target.value}); setErrorMsg(''); }}
+            />
+          </div>
+          <div className="spawner-row">
+            <div className="date-input-group">
+              <label>Starts</label>
+              <input 
+                type="date" 
+                value={newTrip.start_date} 
+                onChange={e => setNewTrip({...newTrip, start_date: e.target.value})}
+              />
+            </div>
+            <div className="date-input-group">
+              <label>Ends</label>
+              <input 
+                type="date" 
+                value={newTrip.end_date} 
+                onChange={e => setNewTrip({...newTrip, end_date: e.target.value})}
+              />
+            </div>
+            <button onClick={handleSpawnTrip} disabled={isSpawning} className="spawn-btn">
+              {isSpawning ? 'Spawning...' : 'Create Trip'}
+            </button>
+          </div>
         </div>
 
         {errorMsg && <div style={{ color: 'red' }}>{errorMsg}</div>}
@@ -119,33 +179,24 @@ const TripsDashboard = () => {
         <div className="trips-bento-grid">
           {trips.map(t => {
             const role = t.trip_members?.[0]?.role || 'viewer';
-
-            const isJoined = t.trip_members?.some(
-              m => m.user_id === user.id
-            );
-
-            const memberCount = t.trip_members?.length ?? 0;
+            const tripDates = t.start_date ? `${new Date(t.start_date).toLocaleDateString()} - ${t.end_date ? new Date(t.end_date).toLocaleDateString() : 'TBD'}` : 'Dates TBD';
 
             return (
               <div key={t.id} className="trip-card">
-
-                <div onClick={() => navigate(`/trip/${t.id}`)}>
-
+                <div onClick={() => navigate(`/trips/${t.id}`)} style={{ flex: 1 }}>
                   <div className="trip-card-header">
                     <div>
                       <h3>{t.name}</h3>
+                      {t.destination && <p className="trip-dest"><i className="fa-solid fa-location-dot"></i> {t.destination}</p>}
                       <span className={`trip-role ${role}`}>{role}</span>
                     </div>
 
                     <div style={{ display: 'flex', gap: '10px' }}>
-
                       {role === 'owner' && (
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openInviteModal(t.id);
-                          }}
+                          onClick={(e) => { e.stopPropagation(); openInviteModal(t.id); }}
                           className="invite-btn"
+                          title="Invite Member"
                         >
                           + Member
                         </button>
@@ -153,37 +204,19 @@ const TripsDashboard = () => {
 
                       {role === 'owner' && (
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteTrip(t.id);
-                          }}
+                          onClick={(e) => { e.stopPropagation(); initiateDelete(t); }}
                           className="delete-btn"
+                          title="Delete Trip"
                         >
                           🗑
                         </button>
                       )}
-
                     </div>
                   </div>
-
-                  <p style={{ marginTop: "8px", color: "#666" }}>
-                    👥 Members: {memberCount}
-                  </p>
-
-                  {isJoined && (
-                    <span style={{
-                      background: "#4caf50",
-                      color: "white",
-                      padding: "4px 10px",
-                      borderRadius: "10px",
-                      fontSize: "12px",
-                      marginTop: "5px",
-                      display: "inline-block"
-                    }}>
-                      Joined
-                    </span>
-                  )}
-
+                  <div className="trip-date">
+                    <span>{tripDates}</span>
+                    <i className="fa-solid fa-arrow-right"></i>
+                  </div>
                 </div>
               </div>
             );
@@ -191,7 +224,21 @@ const TripsDashboard = () => {
         </div>
       </div>
 
-      {/* MODAL */}
+      {/* DELETE MODAL */}
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal-box delete-modal">
+            <h3>Delete Trip?</h3>
+            <p>Are you sure you want to permanently delete <strong>{tripToDelete?.name}</strong>? This action cannot be undone.</p>
+            <div style={{ marginTop: 20, display: 'flex', gap: '10px' }}>
+              <button onClick={confirmDelete} style={{ background: '#ff5252' }}>Delete Permanently</button>
+              <button onClick={() => setShowDeleteModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* INVITE MODAL */}
       {showInviteModal && (
         <div className="modal-overlay">
           <div className="modal-box">
@@ -204,8 +251,8 @@ const TripsDashboard = () => {
               onChange={(e) => setInviteEmail(e.target.value)}
             />
 
-            <div style={{ marginTop: 10, display: 'flex', gap: '10px' }}>
-              <button onClick={handleSendInvite}>Send</button>
+            <div style={{ marginTop: 20, display: 'flex', gap: '10px' }}>
+              <button onClick={handleSendInvite} style={{ background: '#0b5851', color: 'white' }}>Send Invitation</button>
               <button onClick={() => setShowInviteModal(false)}>Cancel</button>
             </div>
           </div>

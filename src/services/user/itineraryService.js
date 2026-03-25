@@ -1,121 +1,89 @@
 import { supabase } from "../../config/supabase";
 
-/* =========================
-   GET ITINERARY
-========================= */
-export const getItinerary = async (trip_id) => {
+/**
+ * Fetch all itinerary items for a specific trip, sorted by date and time.
+ */
+export const getItineraryItems = async (tripId) => {
   const { data, error } = await supabase
-    .from("itinerary_items")
-    .select("*")
-    .eq("trip_id", trip_id)
-    .order("start_time", { ascending: true });
+    .from('itinerary_items')
+    .select('*')
+    .eq('trip_id', tripId)
+    .order('date', { ascending: true, nullsFirst: false })
+    .order('time', { ascending: true, nullsFirst: false });
 
-  if (error) {
-    console.error("GET ERROR:", error);
-    return [];
-  }
-
-  return data;
+  return { items: data || [], error };
 };
 
-/* =========================
-   ADD ITEM
-========================= */
-export const addItineraryItem = async (item) => {
-  try {
-    const { data: userData, error: userError } =
-      await supabase.auth.getUser();
+/**
+ * Add a new stop/item to the trip itinerary.
+ */
+export const addItineraryItem = async (itemData) => {
+  const { data, error } = await supabase
+    .from('itinerary_items')
+    .insert([itemData])
+    .select()
+    .single();
 
-    if (userError) {
-      console.error("USER ERROR:", userError);
-    }
-
-    // ✅ Convert to ISO safely
-    const startISO = item.start_time
-      ? new Date(item.start_time).toISOString()
-      : null;
-
-    const endISO = item.end_time
-      ? new Date(item.end_time).toISOString()
-      : null;
-
-    const { data, error } = await supabase
-      .from("itinerary_items")
-      .insert([
-        {
-          ...item,
-          start_time: startISO,
-          end_time: endISO,
-          added_by: userData?.user?.id || null,
-        },
-      ])
-      .select();
-
-    if (error) {
-      console.error("INSERT ERROR:", error);
-      return null;
-    }
-
-    return data;
-  } catch (err) {
-    console.error("UNEXPECTED ERROR:", err);
-    return null;
-  }
+  return { item: data, error };
 };
 
-/* =========================
-   UPDATE ITEM (EDIT ✏️)
-========================= */
-export const updateItineraryItem = async (id, updates) => {
-  try {
-    const startISO = updates.start_time
-      ? new Date(updates.start_time).toISOString()
-      : null;
+/**
+ * Edit an existing itinerary item.
+ */
+export const updateItineraryItem = async (itemId, updates) => {
+  const { data, error } = await supabase
+    .from('itinerary_items')
+    .update(updates)
+    .eq('id', itemId)
+    .select()
+    .single();
 
-    const endISO = updates.end_time
-      ? new Date(updates.end_time).toISOString()
-      : null;
-
-    const { data, error } = await supabase
-      .from("itinerary_items")
-      .update({
-        ...updates,
-        start_time: startISO,
-        end_time: endISO,
-      })
-      .eq("id", id)
-      .select();
-
-    if (error) {
-      console.error("UPDATE ERROR:", error);
-      return null;
-    }
-
-    return data;
-  } catch (err) {
-    console.error("UPDATE EXCEPTION:", err);
-    return null;
-  }
+  return { item: data, error };
 };
 
-/* =========================
-   DELETE ITEM (🗑)
-========================= */
-export const deleteItineraryItem = async (id) => {
-  try {
-    const { error } = await supabase
-      .from("itinerary_items")
-      .delete()
-      .eq("id", id);
+/**
+ * Delete an itinerary item.
+ */
+export const deleteItineraryItem = async (itemId) => {
+  const { error } = await supabase
+    .from('itinerary_items')
+    .delete()
+    .eq('id', itemId);
 
-    if (error) {
-      console.error("DELETE ERROR:", error);
-      return false;
+  return { error };
+};
+
+/**
+ * Groups itinerary items by date for the UI timeline.
+ */
+export const groupItineraryByDay = (items) => {
+  return items.reduce((groups, item) => {
+    const date = item.date || 'Unscheduled';
+    if (!groups[date]) {
+      groups[date] = [];
     }
+    groups[date].push(item);
+    return groups;
+  }, {});
+};
 
-    return true;
-  } catch (err) {
-    console.error("DELETE EXCEPTION:", err);
-    return false;
-  }
+/**
+ * Set up a Realtime subscription for itinerary changes.
+ */
+export const subscribeToItinerary = (tripId, onUpdate) => {
+  return supabase
+    .channel(`itinerary:${tripId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'itinerary_items',
+        filter: `trip_id=eq.${tripId}`,
+      },
+      (payload) => {
+        onUpdate(payload);
+      }
+    )
+    .subscribe();
 };

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createEntry, getEntries, updateEntry, deleteEntry } from '../services/user/journalService';
 import './JournalDashboard.css';
@@ -11,6 +12,9 @@ export default function JournalDashboard() {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ title: '', content: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [entryToDelete, setEntryToDelete] = useState(null);
+  const [toast, setToast] = useState('');
 
   // Fetch entries on mount
   useEffect(() => {
@@ -31,7 +35,8 @@ export default function JournalDashboard() {
   const handleSave = async (e) => {
     e.preventDefault();
     if (!formData.title.trim() || !formData.content.trim()) {
-      alert('Please fill in all fields');
+      setToast('⚠ Please fill in all fields');
+      setTimeout(() => setToast(""), 3000);
       return;
     }
 
@@ -49,8 +54,11 @@ export default function JournalDashboard() {
       setShowForm(false);
       setEditingId(null);
       await loadEntries();
+      setToast(`✨ ${editingId ? 'Memory Updated' : 'Memory Saved'}`);
+      setTimeout(() => setToast(""), 3000);
     } else {
-      alert(`Error: ${result.error}`);
+      setToast(`❌ Error: ${result.error}`);
+      setTimeout(() => setToast(""), 4000);
     }
     setSubmitting(false);
   };
@@ -61,15 +69,26 @@ export default function JournalDashboard() {
     setShowForm(true);
   };
 
-  const handleDelete = async (entryId) => {
-    if (!window.confirm('Delete this entry?')) return;
+  const initiateDelete = (entry) => {
+    setEntryToDelete(entry);
+    setShowDeleteModal(true);
+  };
 
-    const result = await deleteEntry(entryId);
+  const confirmDelete = async () => {
+    if (!entryToDelete) return;
+    
+    setShowDeleteModal(false);
+    const result = await deleteEntry(entryToDelete.id);
+    
     if (result.success) {
       await loadEntries();
+      setToast("🗑 Memory deleted");
+      setTimeout(() => setToast(""), 3000);
     } else {
-      alert(`Error: ${result.error}`);
+      setToast(`❌ Error: ${result.error}`);
+      setTimeout(() => setToast(""), 4000);
     }
+    setEntryToDelete(null);
   };
 
   const handleCancel = () => {
@@ -97,16 +116,30 @@ export default function JournalDashboard() {
     });
   };
 
+  const navigate = useNavigate();
+
   return (
-    <div className="journal-container">
-      <div className="journal-header">
-        <h1>Memory Journal</h1>
-        {!showForm && (
-          <button className="btn-primary" onClick={() => setShowForm(true)}>
-            + New Entry
-          </button>
-        )}
-      </div>
+    <div className="journal-page-container">
+      <div className="journal-overlay"></div>
+      
+      <div className="journal-wrapper">
+        <nav className="profile-nav">
+          <div className="profile-logo" onClick={() => navigate('/')}>TourWeave</div>
+          <div className="nav-links">
+            <span onClick={() => navigate('/trips')}>Trips</span>
+            <span onClick={() => navigate('/profile')}>Profile</span>
+            <button className="profile-back-btn" onClick={() => navigate('/')}>&larr; Home</button>
+          </div>
+        </nav>
+
+        <div className="journal-header">
+          <h1>Memory Journal</h1>
+          {!showForm && (
+            <button className="btn-primary" onClick={() => setShowForm(true)}>
+              + New Entry
+            </button>
+          )}
+        </div>
 
       {/* Form Section */}
       {showForm && (
@@ -182,7 +215,7 @@ export default function JournalDashboard() {
                   <button className="btn-edit" onClick={() => handleEdit(entry)}>
                     Edit
                   </button>
-                  <button className="btn-delete" onClick={() => handleDelete(entry.id)}>
+                  <button className="btn-delete" onClick={() => initiateDelete(entry)}>
                     Delete
                   </button>
                 </div>
@@ -190,6 +223,34 @@ export default function JournalDashboard() {
             </div>
           ))
         )}
+      </div>
+
+      {/* DELETE MODAL */}
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal-box delete-modal">
+            <h3>Delete Memory?</h3>
+            <p>Are you sure you want to delete <strong>{entryToDelete?.title}</strong>? This memory will be lost forever.</p>
+            <div style={{ marginTop: 20, display: 'flex', gap: '10px' }}>
+              <button 
+                onClick={confirmDelete} 
+                style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '12px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700 }}
+              >
+                Delete Memory
+              </button>
+              <button 
+                onClick={() => setShowDeleteModal(false)} 
+                style={{ background: '#f0f0f0', color: '#666', border: 'none', borderRadius: '12px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700 }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TOAST UI */}
+      {toast && <div className="toast">{toast}</div>}
       </div>
     </div>
   );

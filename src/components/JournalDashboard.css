@@ -1,23 +1,98 @@
-/* Journal Dashboard */
-
-.journal-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 24px;
+/* Journal Dashboard Theme */
+.journal-page-container {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    background: url('../assets/journal_bg.png') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
 }
+
+.journal-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(11, 88, 81, 0.85) 0%, rgba(26, 26, 26, 0.9) 100%);
+    z-index: 1;
+}
+
+.journal-wrapper {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 5rem;
+}
+
+.profile-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.profile-logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+    cursor: pointer;
+    letter-spacing: -1px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-links span {
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    opacity: 0.8;
+    transition: 0.3s;
+}
+
+.nav-links span:hover { opacity: 1; }
+
+.profile-back-btn {
+    background: white;
+    color: #0b5851;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.profile-back-btn:hover { background: #e0f2f1; transform: translateX(-5px); }
 
 .journal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  margin: 2rem auto;
+  width: 90%;
+  max-width: 900px;
 }
 
 .journal-header h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: 3rem;
+  font-weight: 800;
+  color: white;
   margin: 0;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.journal-entries {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 .btn-primary {
@@ -319,4 +394,53 @@
   .btn-delete {
     flex: 1;
   }
+}
+/* Modal & Toast UI Beautification */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+}
+
+.modal-box h3 { margin: 0; color: #1a1a1a; }
+.modal-box p { color: #666; font-size: 0.95rem; line-height: 1.4; }
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1b803a;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    z-index: 9999;
+    animation: fadeInOut 3s ease;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, 20px); }
+    15% { opacity: 1; transform: translate(-50%, 0); }
+    85% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, 20px); }
 }

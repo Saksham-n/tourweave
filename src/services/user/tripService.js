@@ -1,71 +1,55 @@
 import { supabase } from '../../config/supabase';
 
-/* =========================
-   CREATE TRIP + OWNER
-========================= */
-export const createTrip = async (userId, tripName, destination = null) => {
-  try {
-    // 1. Create trip
-    const { data: trip, error: tripError } = await supabase
-      .from('trips')
-      .insert({
-        name: tripName,
-        destination,
-        created_by: userId,
-      })
-      .select()
-      .single();
+/**
+ * Executes a powerful transaction-like sequence to create a Trip and explicitly bind
+ * the creator to the Trip as an Owner! 
+ */
+export const createTrip = async (userId, tripData) => {
+  const { name, destination, start_date, end_date } = tripData;
+  
+  // 1. Create the trip entity
+  const { data: trip, error: tripError } = await supabase
+    .from('trips')
+    .insert({ 
+      name, 
+      destination, 
+      start_date, 
+      end_date, 
+      created_by: userId 
+    })
+    .select()
+    .single();
 
-    if (tripError) throw tripError;
+  if (tripError) return { trip: null, error: tripError };
 
-    // 2. Add owner (SAFE: avoids duplicate crash)
-    const { error: memberError } = await supabase
-      .from('trip_members')
-      .upsert(
-        {
-          trip_id: trip.id,
-          user_id: userId,
-          role: 'owner',
-        },
-        { onConflict: 'trip_id,user_id' }
-      );
+  // 2. Bind the user to their newly created trip
+  const { error: memberError } = await supabase
+    .from('trip_members')
+    .insert({ trip_id: trip.id, user_id: userId, role: 'owner' });
 
-    if (memberError) throw memberError;
-
-    return { trip, error: null };
-  } catch (error) {
-    console.error('Create Trip Error:', error);
-    return { trip: null, error };
+  // If the error is a duplicate key, it means a Supabase PostgreSQL Trigger already automatically added them as an owner!
+  if (memberError && !memberError.message.includes('duplicate key value')) {
+    return { trip: null, error: memberError };
   }
+
+  return { trip, error: null };
 };
 
-/* =========================
-   GET USER TRIPS
-========================= */
+/**
+ * Joins the `trips` and `trip_members` tables intelligently so we ONLY return
+ * the exact chunks of data the active user is allowed to access.
+ */
 export const getUserTrips = async (userId) => {
-  try {
-    const { data, error } = await supabase
-      .from("trips")
-      .select(`
-        *,
-        trip_members(user_id, role)
-      `);
+  const { data, error } = await supabase
+    .from('trips')
+    .select(`
+      *,
+      trip_members!inner(role)
+    `)
+    .eq('trip_members.user_id', userId)
+    .order('created_at', { ascending: false });
 
-    if (error) throw error;
-
-    // ✅ FILTER IN FRONTEND (IMPORTANT)
-    const filteredTrips = data.filter(
-      (trip) =>
-        trip.user_id === userId || // owner
-        trip.trip_members?.some((m) => m.user_id === userId) // member
-    );
-
-    return { trips: filteredTrips };
-
-  } catch (err) {
-    console.error("Error fetching trips:", err);
-    return { error: err };
-  }
+  return { trips: data || [], error };
 };
 
 /* =========================
@@ -172,6 +156,38 @@ export const removeMemberFromTrip = async (tripId, userId) => {
     console.error('Remove Member Error:', error);
     return { error };
   }
+};
+
+/**
+ * Subscribes to changes in trips where the user is a member.
+ */
+export const subscribeToUserTrips = (userId, onUpdate) => {
+  return supabase
+    .channel(`user_trips:${userId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'trips',
+      },
+      (payload) => {
+        onUpdate(payload);
+      }
+    )
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'trip_members',
+        filter: `user_id=eq.${userId}`,
+      },
+      (payload) => {
+        onUpdate(payload);
+      }
+    )
+    .subscribe();
 };
 
 // Get all members

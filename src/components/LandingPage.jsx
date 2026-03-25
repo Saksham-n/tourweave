@@ -141,7 +141,8 @@ const LandingPage = () => {
   
   const navigate = useNavigate();
   const location = useLocation();
-  const t = translations[lang];
+  const [t, setT] = useState(translations[lang]); // Changed from direct assignment to state
+  const [sent, setSent] = useState(false);
 
   // Handle Scroll for Vertical Nav
   useEffect(() => {
@@ -457,7 +458,13 @@ const LandingPage = () => {
 
                 <div className="footer-cta" id="contact-form">
                     <h3 style={{ marginBottom: '1rem' }}>{t.contact_us_title}</h3>
-                    <form className="mini-contact-form" onSubmit={(e) => { e.preventDefault(); alert('Message Sent!'); }}>
+                    {sent ? (
+                      <div className="form-success-msg" style={{ background: 'rgba(76,175,80,0.1)', color: '#4caf50', padding: '1.5rem', borderRadius: '12px', border: '1px solid #4caf50', textAlign: 'center' }}>
+                        <h3>✨ Message Sent!</h3>
+                        <p>We'll get back to you shortly.</p>
+                      </div>
+                    ) : (
+                      <form className="mini-contact-form" onSubmit={(e) => { e.preventDefault(); setSent(true); }}>
                         <input type="text" placeholder="Name" className="mini-input" required />
                         <input type="email" placeholder="Email" className="mini-input" required />
                         <textarea placeholder="Message" className="mini-input" rows="3" required></textarea>
@@ -466,7 +473,8 @@ const LandingPage = () => {
                             <label htmlFor="policy-agree">{t.agree_policy}</label>
                         </div>
                         <button type="submit" className="send-btn">{t.btn_send}</button>
-                    </form>
+                      </form>
+                    )}
                 </div>
             </div>
 
