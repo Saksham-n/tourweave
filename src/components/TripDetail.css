@@ -433,6 +433,10 @@
     animation: fadeInOut 3s ease;
 }
 
+.toast-error {
+    background: #ff5252 !important;
+}
+
 @keyframes fadeInOut {
     0% { opacity: 0; transform: translate(-50%, 20px); }
     15% { opacity: 1; transform: translate(-50%, 0); }

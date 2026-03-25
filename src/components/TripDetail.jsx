@@ -287,7 +287,7 @@ const TripDetail = () => {
       )}
 
       {/* TOAST UI */}
-      {toast && <div className="toast">{toast}</div>}
+      {toast && <div className={`toast ${toast.includes('⚠') || toast.includes('❌') ? 'toast-error' : ''}`}>{toast}</div>}
     </div>
   );
 };

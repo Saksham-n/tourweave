@@ -17,7 +17,6 @@ const TripsDashboard = () => {
     end_date: ''
   });
   const [isSpawning, setIsSpawning] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
 
   // ✅ Delete/Invite states
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -41,17 +40,18 @@ const TripsDashboard = () => {
 
   const handleSpawnTrip = async () => {
     if (!newTrip.name.trim()) {
-      setErrorMsg('Your trip needs a name before we can continue!');
+      setToast('⚠ Your trip needs a name before we can continue!');
+      setTimeout(() => setToast(""), 4000);
       return;
     }
     
     setIsSpawning(true);
-    setErrorMsg('');
     
     const { error } = await createTrip(user.id, newTrip);
     
     if (error) {
-      setErrorMsg(error.message);
+      setToast(`❌ Error: ${error.message}`);
+      setTimeout(() => setToast(""), 5000);
     } else {
       setNewTrip({
         name: '',
@@ -79,7 +79,8 @@ const TripsDashboard = () => {
     setShowDeleteModal(false);
 
     if (error) {
-      setErrorMsg(error.message);
+      setToast(`❌ Error: ${error.message}`);
+      setTimeout(() => setToast(""), 5000);
     } else {
       fetchTrips();
       setToast("🗑 Trip deleted successfully");
@@ -142,13 +143,13 @@ const TripsDashboard = () => {
               type="text" 
               placeholder="Trip Name (e.g. Himalayas 2026)" 
               value={newTrip.name} 
-              onChange={e => { setNewTrip({...newTrip, name: e.target.value}); setErrorMsg(''); }}
+              onChange={e => setNewTrip({...newTrip, name: e.target.value})}
             />
             <input 
               type="text" 
               placeholder="Destination (e.g. Manali, India)" 
               value={newTrip.destination} 
-              onChange={e => { setNewTrip({...newTrip, destination: e.target.value}); setErrorMsg(''); }}
+              onChange={e => setNewTrip({...newTrip, destination: e.target.value})}
             />
           </div>
           <div className="spawner-row">
@@ -174,7 +175,6 @@ const TripsDashboard = () => {
           </div>
         </div>
 
-        {errorMsg && <div style={{ color: 'red' }}>{errorMsg}</div>}
 
         <div className="trips-bento-grid">
           {trips.map(t => {
@@ -260,7 +260,7 @@ const TripsDashboard = () => {
       )}
 
       {/* ✅ TOAST UI */}
-      {toast && <div className="toast">{toast}</div>}
+      {toast && <div className={`toast ${toast.includes('⚠') || toast.includes('❌') ? 'toast-error' : ''}`}>{toast}</div>}
 
     </div>
   );

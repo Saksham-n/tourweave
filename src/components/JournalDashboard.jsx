@@ -143,39 +143,44 @@ export default function JournalDashboard() {
 
       {/* Form Section */}
       {showForm && (
-        <div className="journal-form-wrapper">
-          <form className="journal-form" onSubmit={handleSave}>
-            <div className="form-group">
-              <label>Title</label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Give your memory a title..."
-                disabled={submitting}
-              />
+        <div className="modal-overlay">
+          <div className="journal-form-wrapper">
+            <div className="modal-header">
+              <h2>{editingId ? 'Edit Memory' : 'New Memory'}</h2>
             </div>
+            <form className="journal-form" onSubmit={handleSave}>
+              <div className="form-group">
+                <label>Title</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="Give your memory a title..."
+                  disabled={submitting}
+                />
+              </div>
 
-            <div className="form-group">
-              <label>Content</label>
-              <textarea
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                placeholder="Write your travel memory..."
-                rows="6"
-                disabled={submitting}
-              ></textarea>
-            </div>
+              <div className="form-group">
+                <label>Content</label>
+                <textarea
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  placeholder="Write your travel memory..."
+                  rows="6"
+                  disabled={submitting}
+                />
+              </div>
 
-            <div className="form-actions">
-              <button type="submit" className="btn-save" disabled={submitting}>
-                {submitting ? 'Saving...' : editingId ? 'Update' : 'Save'}
-              </button>
-              <button type="button" className="btn-cancel" onClick={handleCancel} disabled={submitting}>
-                Cancel
-              </button>
-            </div>
-          </form>
+              <div className="form-actions">
+                <button type="submit" className="btn-save" disabled={submitting}>
+                  {submitting ? 'Saving...' : editingId ? 'Update' : 'Save'}
+                </button>
+                <button type="button" className="btn-cancel" onClick={handleCancel} disabled={submitting}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
@@ -250,7 +255,7 @@ export default function JournalDashboard() {
       )}
 
       {/* TOAST UI */}
-      {toast && <div className="toast">{toast}</div>}
+      {toast && <div className={`toast ${toast.includes('⚠') || toast.includes('❌') ? 'toast-error' : ''}`}>{toast}</div>}
       </div>
     </div>
   );
