@@ -164,6 +164,19 @@ export async function uploadExpenseReceipt(file, userId, groupId) {
 }
 
 /**
+ * @param {string} path
+ * @returns {Promise<string>} signed URL
+ */
+export async function getReceiptSignedUrl(path) {
+  if (!path) return null;
+  const { data, error } = await supabase.storage
+    .from('expense-receipts')
+    .createSignedUrl(path, 3600); // 1 hour
+  if (error) throw error;
+  return data.signedUrl;
+}
+
+/**
  * Frontend → Supabase: insert expense row, then batch-insert splits (same pattern as docs).
  * @param {{
  *   groupId: string,
