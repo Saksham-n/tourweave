@@ -38,11 +38,6 @@ const JammuKashmir = () => {
   const [hoveredDistrict, setHoveredDistrict] = useState(null);
   const navigate = useNavigate();
 
-  const districtImages = {
-    'Srinagar': 'https://via.placeholder.com/400x300/96CEB4/FFFFFF?text=Srinagar',
-    'Jammu': 'https://via.placeholder.com/400x300/FECA57/FFFFFF?text=Jammu',
-  };
-
   const districtDescriptions = {
             'Srinagar': 'Srinagar is the summer capital of Jammu and Kashmir and is known as the "Venice of the East" due to its numerous canals and houseboats on Dal Lake. The city is famous for its Mughal gardens, including Shalimar Bagh and Nishat Bagh. It\'s a major tourist destination and educational hub.',
             'Jammu': 'Jammu is the winter capital of Jammu and Kashmir and is known for its ancient temples and palaces. The city is home to the famous Raghunath Temple and has a rich Dogra culture. It\'s also known for its military history and serves as an important gateway to the region.',
@@ -74,9 +69,7 @@ const JammuKashmir = () => {
     ? (districtDescriptions[activeDistrict] || 'Information about this district is not available.')
     : 'Jammu and Kashmir is a region administered by India as a union territory and consisting of the southern portion of the larger Kashmir region.';
   
-  const activeImage = activeDistrict 
-    ? (districtImages[activeDistrict] || 'https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=No+Image')
-    : '/images/dl.webp';
+  const activeImage = '/images/dl.webp';
 
   // Styles specific to JK
   const jkStyles = {
@@ -158,9 +151,9 @@ const JammuKashmir = () => {
                 <i className="fa-solid fa-mountain-sun"></i>
             </div>
             <div className="action-buttons">
-              <button className="pill-btn btn-gallery" style={{ backgroundColor: 'var(--btn-gallery)', color: 'white' }}>
+              {/* <button className="pill-btn btn-gallery" style={{ backgroundColor: 'var(--btn-gallery)', color: 'white' }}>
                 <i className="fa-regular fa-images"></i> Gallery
-              </button>
+              </button> */}
               <button className="pill-btn btn-planner" style={{ backgroundColor: 'var(--btn-planner)', color: 'white' }}>
                 <i className="fa-solid fa-wand-magic-sparkles"></i> AI Planner
               </button>

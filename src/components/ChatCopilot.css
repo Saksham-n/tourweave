@@ -14,7 +14,7 @@
 .chat-fab {
   width: 64px;
   height: 64px;
-  border-radius: 50%;
+  border-radius: 25%;
   background: rgba(27, 128, 58, 0.1);
   color: white;
   border: 1.5px solid rgba(255, 255, 255, 0.3);
@@ -28,7 +28,6 @@
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(8px);
 }
 
 .chat-fab::before {
@@ -42,14 +41,14 @@
 
 /* Dark Background Theme (Hero/Top) */
 .chat-fab.dark-bg {
-  background: rgba(255, 255, 255, 0.1);
+  background: #09431aa8;
   color: white;
   border: 1.5px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .chat-fab.dark-bg:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.15);
+  background: #043212a8;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
@@ -112,7 +111,6 @@
   width: 360px;
   height: 520px;
   background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(16px);
   border-radius: 16px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 8px 32px rgba(27, 128, 58, 0.08),
     inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.05);
@@ -142,7 +140,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background: linear-gradient(135deg, #1b803a 0%, #2d9a52 100%);
+  background: linear-gradient(135deg, #1c592f 0%, #118238 100%);
   color: white;
   border-radius: 16px 16px 0 0;
   position: relative;
@@ -334,7 +332,6 @@
   color: #1f2937;
   border: 1px solid rgba(27, 128, 58, 0.08);
   border-bottom-left-radius: 4px;
-  backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
