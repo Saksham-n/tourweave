@@ -117,7 +117,7 @@ const Goa = () => {
               src={activeImage} 
               className="featured-image" 
               alt={activeTitle}
-              onError={(e) => e.target.src = 'public/images/goa.webp'}
+              onError={(e) => e.target.src = '/images/goa.webp'}
             />
           </div>
 
