@@ -15,6 +15,7 @@ import {
   removeParticipantByName,
   uploadExpenseReceipt,
 } from '../../services/user/expenseService';
+import Tesseract from 'tesseract.js';
 import './ExpenseModule.css';
 
 const SPLIT_TYPES = [
@@ -55,6 +56,8 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
   const [checkingRemove, setCheckingRemove] = useState(false);
   const [deletingParticipant, setDeletingParticipant] = useState(false);
   const [toastMsg, setToastMsg] = useState(null);
+  
+  const [ocrLoading, setOcrLoading] = useState(false);
 
   const fileRef = useRef(null);
 
@@ -136,6 +139,44 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
       setParticipantToRemove(null);
     } finally {
       setCheckingRemove(false);
+    }
+  };
+
+  const handleOcrProcess = async (file) => {
+    if (!file) return;
+    // Only process images, ignoring PDF for now
+    if (!file.type.startsWith('image/')) return;
+
+    setOcrLoading(true);
+    setMsg(null);
+    try {
+      const { data: { text } } = await Tesseract.recognize(file, 'eng');
+      const lines = text.split('\n');
+      let foundTotal = 0;
+      
+      lines.forEach(line => {
+        if (line.toLowerCase().includes('total')) {
+          const match = line.match(/\d+(\.\d+)?/);
+          if (match) {
+            const parsed = parseFloat(match[0]);
+            if (parsed > foundTotal) foundTotal = parsed;
+          }
+        }
+      });
+
+      if (foundTotal > 0) {
+        setAmount(foundTotal.toString());
+        setDescription('Receipt upload');
+        setSplitType('equal'); // Default to equal
+        setMsg({ type: 'success', text: `Receipt scanned successfully. Detected Total: ₹${foundTotal}` });
+      } else {
+        setMsg({ type: 'error', text: 'OCR could not detect a total. Please enter manually.' });
+      }
+    } catch (err) {
+      console.error('OCR Error:', err);
+      setMsg({ type: 'error', text: 'OCR processing failed. Please enter details manually.' });
+    } finally {
+      setOcrLoading(false);
     }
   };
 
@@ -402,13 +443,20 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
               type="file"
               accept="image/*,.pdf"
               style={{ display: 'none' }}
-              onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+              onChange={async (e) => {
+                const file = e.target.files?.[0] || null;
+                setReceiptFile(file);
+                if (file) {
+                  await handleOcrProcess(file);
+                }
+              }}
             />
-            <button type="button" className="pro-btn-secondary" onClick={() => fileRef.current?.click()}>
-              Upload receipt
+            <button type="button" className="pro-btn-secondary" onClick={() => fileRef.current?.click()} disabled={ocrLoading}>
+              {ocrLoading ? 'Scanning...' : 'Upload receipt'}
             </button>
             {receiptFile && <span className="expense-receipt-name">{receiptFile.name}</span>}
           </div>
+          {ocrLoading && <p className="expense-hint" style={{ marginTop: '0.5rem', color: '#0070f3' }}>Running OCR to detect amount...</p>}
         </div>
 
         <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
