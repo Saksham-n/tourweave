@@ -50,13 +50,13 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
   const [msg, setMsg] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [addingName, setAddingName] = useState(false);
-  
+
   const [participantToRemove, setParticipantToRemove] = useState(null);
   const [removeConfirmType, setRemoveConfirmType] = useState(null);
   const [checkingRemove, setCheckingRemove] = useState(false);
   const [deletingParticipant, setDeletingParticipant] = useState(false);
   const [toastMsg, setToastMsg] = useState(null);
-  
+
   const [ocrLoading, setOcrLoading] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
 
@@ -164,7 +164,7 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
       const { data: { text } } = await Tesseract.recognize(file, 'eng');
       const lines = text.split('\n');
       let foundTotal = 0;
-      
+
       lines.forEach(line => {
         if (line.toLowerCase().includes('total')) {
           const match = line.match(/\d+(\.\d+)?/);
@@ -501,14 +501,14 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
             ) : (
               <p>Are you sure you want to remove <strong>{participantToRemove}</strong>?</p>
             )}
-            
+
             <div className="expense-modal-actions">
               <button type="button" className="pro-btn-cancel" onClick={() => { setParticipantToRemove(null); setRemoveConfirmType(null); }} disabled={deletingParticipant}>
                 Cancel
               </button>
               <button type="button" className="pro-btn-danger" onClick={confirmRemoveParticipant} disabled={deletingParticipant}>
-                {deletingParticipant 
-                  ? 'Removing...' 
+                {deletingParticipant
+                  ? 'Removing...'
                   : (removeConfirmType === 'cascade' ? 'Delete participant + all their expenses' : 'Remove')}
               </button>
             </div>

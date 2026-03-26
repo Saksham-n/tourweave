@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../config/supabase';
 import { useAuth } from '../context/AuthContext';
-import { 
-  getItineraryItems, 
-  addItineraryItem, 
-  deleteItineraryItem, 
+import {
+  getItineraryItems,
+  addItineraryItem,
+  deleteItineraryItem,
   subscribeToItinerary,
-  groupItineraryByDay 
+  groupItineraryByDay
 } from '../services/user/itineraryService';
 import './TripDetail.css';
 
@@ -80,8 +80,8 @@ const TripDetail = () => {
         setItems((prev) => {
           // Prevent duplicates if the initiator already added it to local state
           if (prev.some(item => item.id === payload.new.id)) return prev;
-          
-          return [...prev, payload.new].sort((a, b) => 
+
+          return [...prev, payload.new].sort((a, b) =>
             new Date(a.date + 'T' + (a.time || '00:00')) - new Date(b.date + 'T' + (b.time || '00:00'))
           );
         });
@@ -112,7 +112,7 @@ const TripDetail = () => {
     };
 
     // Optimistically add to state
-    setItems((prev) => [...prev, optimisticItem].sort((a, b) => 
+    setItems((prev) => [...prev, optimisticItem].sort((a, b) =>
       new Date(a.date + 'T' + (a.time || '00:00')) - new Date(b.date + 'T' + (b.time || '00:00'))
     ));
     setNewItem({ title: '', location_name: '', date: '', time: '', description: '' });
@@ -170,7 +170,7 @@ const TripDetail = () => {
     const month = viewDate.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const startDay = new Date(year, month, 1).getDay(); // 0 = Sunday
-    
+
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     return (
@@ -210,7 +210,7 @@ const TripDetail = () => {
         times.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
       }
     }
-    
+
     return (
       <div className={`datepicker-card ${activeDropdown === 'time' ? 'show' : ''}`} style={{ padding: '10px' }}>
         <div style={{ fontWeight: 'bold', marginBottom: '10px', color: '#0b5851', textAlign: 'center' }}>Select Time</div>
@@ -306,7 +306,7 @@ const TripDetail = () => {
         }
       `}</style>
       <div className="detail-overlay"></div>
-      
+
       <div className="detail-wrapper">
         <nav className="profile-nav">
           <div className="profile-logo" onClick={() => navigate('/')}>TourWeave</div>
@@ -327,7 +327,7 @@ const TripDetail = () => {
             )}
             <div className="trip-meta-tags">
               <span className="meta-tag date">
-                <i className="fa-solid fa-calendar-days"></i> 
+                <i className="fa-solid fa-calendar-days"></i>
                 {trip.start_date ? `${new Date(trip.start_date).toLocaleDateString()} - ${trip.end_date ? new Date(trip.end_date).toLocaleDateString() : 'TBD'}` : 'Dates TBD'}
               </span>
               <span className={`meta-tag role ${trip.trip_members[0]?.role}`}>
@@ -335,7 +335,7 @@ const TripDetail = () => {
               </span>
             </div>
           </div>
-          
+
           <button className="add-item-trigger" onClick={() => setShowAddForm(true)}>
             <i className="fa-solid fa-plus"></i> Add Place
           </button>
@@ -346,24 +346,24 @@ const TripDetail = () => {
             <div className="form-content">
               <h3>Plan New Stop</h3>
               <form onSubmit={handleAddItem}>
-                <input 
-                  type="text" 
-                  placeholder="Title (e.g. Breakfast at Kochi Fort)" 
+                <input
+                  type="text"
+                  placeholder="Title (e.g. Breakfast at Kochi Fort)"
                   value={newItem.title}
-                  onChange={e => setNewItem({...newItem, title: e.target.value})}
+                  onChange={e => setNewItem({ ...newItem, title: e.target.value })}
                   required
                 />
-                <input 
-                  type="text" 
-                  placeholder="Location Name" 
+                <input
+                  type="text"
+                  placeholder="Location Name"
                   value={newItem.location_name}
-                  onChange={e => setNewItem({...newItem, location_name: e.target.value})}
+                  onChange={e => setNewItem({ ...newItem, location_name: e.target.value })}
                 />
                 <div className="form-row">
                   <div className="input-with-icon" style={{ position: 'relative' }}>
                     <i className="fa-solid fa-calendar-days icon"></i>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={newItem.date}
                       onClick={() => setActiveDropdown(activeDropdown === 'date' ? null : 'date')}
                       readOnly
@@ -375,8 +375,8 @@ const TripDetail = () => {
                   </div>
                   <div className="input-with-icon" style={{ position: 'relative' }}>
                     <i className="fa-solid fa-clock icon"></i>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={newItem.time}
                       onClick={() => setActiveDropdown(activeDropdown === 'time' ? null : 'time')}
                       readOnly
@@ -386,10 +386,10 @@ const TripDetail = () => {
                     {renderTimePicker()}
                   </div>
                 </div>
-                <textarea 
-                  placeholder="Notes/Description" 
+                <textarea
+                  placeholder="Notes/Description"
                   value={newItem.description}
-                  onChange={e => setNewItem({...newItem, description: e.target.value})}
+                  onChange={e => setNewItem({ ...newItem, description: e.target.value })}
                 />
                 <div className="form-actions">
                   <button type="button" onClick={() => setShowAddForm(false)} className="cancel-btn">Cancel</button>

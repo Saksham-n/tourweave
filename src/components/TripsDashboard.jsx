@@ -66,11 +66,11 @@ const TripsDashboard = () => {
       setTimeout(() => setToast(""), 4000);
       return;
     }
-    
+
     setIsSpawning(true);
-    
+
     const { error } = await createTrip(user.id, newTrip);
-    
+
     if (error) {
       setToast(`❌ Error: ${error.message}`);
       setTimeout(() => setToast(""), 5000);
@@ -85,7 +85,7 @@ const TripsDashboard = () => {
       setToast("✨ New Trip Created!");
       setTimeout(() => setToast(""), 3000);
     }
-    
+
     setIsSpawning(false);
   };
 
@@ -96,7 +96,7 @@ const TripsDashboard = () => {
 
   const confirmDelete = async () => {
     if (!tripToDelete) return;
-    
+
     const { error } = await deleteTrip(tripToDelete.id);
     setShowDeleteModal(false);
 
@@ -143,12 +143,12 @@ const TripsDashboard = () => {
   const renderDatePicker = (type) => {
     const isStart = type === 'start';
     const value = isStart ? newTrip.start_date : newTrip.end_date;
-    
+
     const year = viewDate.getFullYear();
     const month = viewDate.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const startDay = new Date(year, month, 1).getDay(); // 0 = Sunday, 6 = Saturday
-    
+
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     return (
@@ -202,26 +202,26 @@ const TripsDashboard = () => {
 
         <div className="trip-spawner-expanded">
           <div className="spawner-row">
-            <input 
-              type="text" 
-              placeholder="Trip Name (e.g. Himalayas 2026)" 
-              value={newTrip.name} 
-              onChange={e => setNewTrip({...newTrip, name: e.target.value})}
+            <input
+              type="text"
+              placeholder="Trip Name (e.g. Himalayas 2026)"
+              value={newTrip.name}
+              onChange={e => setNewTrip({ ...newTrip, name: e.target.value })}
             />
-            <input 
-              type="text" 
-              placeholder="Destination (e.g. Manali, India)" 
-              value={newTrip.destination} 
-              onChange={e => setNewTrip({...newTrip, destination: e.target.value})}
+            <input
+              type="text"
+              placeholder="Destination (e.g. Manali, India)"
+              value={newTrip.destination}
+              onChange={e => setNewTrip({ ...newTrip, destination: e.target.value })}
             />
           </div>
           <div className="spawner-row">
             <div className="date-input-group">
               <label>Starts</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Select start date..."
-                value={newTrip.start_date} 
+                value={newTrip.start_date}
                 onClick={() => setActiveDatePicker(activeDatePicker === 'start' ? null : 'start')}
                 readOnly
                 style={{ cursor: 'pointer' }}
@@ -230,10 +230,10 @@ const TripsDashboard = () => {
             </div>
             <div className="date-input-group">
               <label>Ends</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Select end date..."
-                value={newTrip.end_date} 
+                value={newTrip.end_date}
                 onClick={() => setActiveDatePicker(activeDatePicker === 'end' ? null : 'end')}
                 readOnly
                 style={{ cursor: 'pointer' }}
