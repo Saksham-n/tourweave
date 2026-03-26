@@ -35,6 +35,18 @@ const ProfileDashboard = () => {
   const [journalStats, setJournalStats] = useState({ totalEntries: 0, averageSentiment: 0.5, mood: 'neutral' });
   const [activeDropdown, setActiveDropdown] = useState(null);
 
+  // Compute normalized AI Preference Profile
+  const preferenceProfile = useMemo(() => {
+    const intArr = typeof interests === 'string' ? interests.split(',').map(s => s.trim()).filter(Boolean) : [];
+    const destArr = typeof destinations === 'string' ? destinations.split(',').map(s => s.trim()).filter(Boolean) : [];
+    return buildPreferenceProfile({
+      budget,
+      travel_style: travelStyle,
+      interests: intArr,
+      preferred_destinations: destArr
+    });
+  }, [budget, travelStyle, interests, destinations]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
 

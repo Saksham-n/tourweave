@@ -7,7 +7,7 @@ export const generateItinerary = async ({ destination, days, budget, interests, 
   const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
   if (!apiKey) throw new Error("OpenRouter API Key not found in environment.");
 
-  const systemPrompt = `You are TourWeave's expert India travel planner.
+const systemPrompt = `You are TourWeave's expert India travel planner.
 Create a realistic day-by-day itinerary for an India trip.
 Respond ONLY with a valid JSON object matching exactly this structure:
 {
@@ -23,7 +23,10 @@ Respond ONLY with a valid JSON object matching exactly this structure:
     }
   ]
 }
-Do not include markdown blocks, just raw JSON. Ensure realism regarding travel time between places.`;
+Do not include markdown blocks, just raw JSON. 
+Ensure there are no trailing commas. Do NOT use literal newlines inside string values; use space instead. 
+CRITICAL: Do NOT use double quotes (") inside your string values! Use single quotes (') instead if needed. This breaks JSON parsing.
+Ensure realism regarding travel time.`;
 
   const userPrompt = `Trip Details:
 - Destination: ${destination}
@@ -42,12 +45,13 @@ Please generate my structured ${days}-day itinerary.`;
     },
     body: JSON.stringify({
       model: 'mistralai/mistral-small-creative',
+      response_format: { type: "json_object" },
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
       temperature: 0.7,
-      max_tokens: 1500,
+      max_tokens: 3000,
     }),
   });
 
@@ -58,20 +62,35 @@ Please generate my structured ${days}-day itinerary.`;
   }
 
   const data = await response.json();
-  const content = data.choices?.[0]?.message?.content?.trim() || "";
+  let content = data.choices?.[0]?.message?.content?.trim() || "";
 
+  // 1. Try to extract from a markdown code block if present
+  const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (codeBlockMatch) {
+    content = codeBlockMatch[1];
+  }
 
-  // Use regex to locate the first '{' and the last '}' across the entire response
+  // 2. Use regex to locate the first '{' and the last '}'
   const firstBrace = content.indexOf('{');
   const lastBrace = content.lastIndexOf('}');
 
   if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-    const jsonStr = content.substring(firstBrace, lastBrace + 1);
+    let jsonStr = content.substring(firstBrace, lastBrace + 1);
+    
+    // 3. Strip out invalid control characters Mistral sometimes includes
+    jsonStr = jsonStr.replace(/[\u0000-\u001F]/g, function (ch) {
+      if (ch === '\n' || ch === '\r' || ch === '\t') return ch;
+      return '';
+    });
+
+    // 4. Aggressively remove trailing commas before closing braces/brackets
+    jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1');
+
     try {
       return JSON.parse(jsonStr);
     } catch (err) {
-      console.error("Failed to parse extracted JSON block:", jsonStr);
-      throw new Error("The AI response contained invalid JSON.");
+      console.error("Failed to parse JSON string:", jsonStr);
+      throw new Error(`The AI response contained invalid JSON: ${err.message}`);
     }
   }
 
