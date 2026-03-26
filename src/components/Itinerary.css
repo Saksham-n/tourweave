@@ -1,0 +1,300 @@
+/* ================= PAGE ================= */
+.itinerary-page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #e6f4f1, #cde7e2);
+  color: #1f2937;
+}
+
+.itinerary-container {
+  padding: 40px;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* ================= TITLE ================= */
+.title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #0f766e;
+}
+
+/* ================= FORM ================= */
+.form-card {
+  display: grid;
+  gap: 12px;
+  background: white;
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+
+.form-card input,
+.form-card textarea {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.form-card input:focus,
+.form-card textarea:focus {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.2);
+}
+
+/* BUTTON */
+.form-card button {
+  background: #0f766e;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.form-card button:hover {
+  background: #0d5f5a;
+}
+
+/* ================= DAY TABS ================= */
+.day-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.day-tabs button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #e5e7eb;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.day-tabs button:hover {
+  background: #d1d5db;
+}
+
+.day-tabs .active-tab {
+  background: #0f766e;
+  color: white;
+}
+
+/* ================= DAY CARD ================= */
+.day-card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* ================= DAY HEADING ================= */
+.day-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #0f766e;
+  margin-bottom: 15px;
+}
+
+/* ================= ACTIVITY ================= */
+.activity-row {
+  display: flex;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+
+.activity-row:last-child {
+  border-bottom: none;
+}
+
+/* TIME */
+.time {
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #0f766e;
+  font-size: 13px;
+}
+
+/* CONTENT */
+.activity-content {
+  flex: 1;
+}
+
+.activity-content h3 {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #0f766e;
+}
+
+.desc {
+  font-size: 13px;
+  color: #555;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  border: none;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* EDIT BUTTON */
+.edit-btn:hover {
+  background: #dbeafe;
+  transform: scale(1.05);
+}
+
+/* DELETE BUTTON */
+.delete-btn:hover {
+  background: #fee2e2;
+  transform: scale(1.05);
+}
+
+/* ================= DATE PICKER ================= */
+
+.react-datepicker {
+  border-radius: 18px !important;
+  border: none !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15) !important;
+  padding: 12px;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+.react-datepicker__header {
+  background: white !important;
+  border-bottom: none !important;
+  padding: 10px 0;
+}
+
+.react-datepicker__current-month {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.react-datepicker__day-name {
+  color: #6b7280;
+  font-size: 12px;
+  margin: 6px;
+}
+
+.react-datepicker__day {
+  border-radius: 10px !important;
+  transition: all 0.2s ease;
+}
+
+.react-datepicker__day:hover {
+  background-color: #e6f4f1 !important;
+  color: #0f766e !important;
+}
+
+.react-datepicker__day--selected {
+  background-color: #0f766e !important;
+  color: white !important;
+}
+
+.react-datepicker__day--today {
+  font-weight: bold;
+  color: #0f766e;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #374151;
+}
+
+/* ================= TIME PICKER ================= */
+
+.react-datepicker__time-container {
+  border-left: none !important;
+}
+
+.react-datepicker__time-box {
+  border-radius: 12px;
+}
+
+.react-datepicker__time-list-item {
+  border-radius: 10px;
+  margin: 3px 6px;
+  padding: 8px;
+  transition: 0.2s;
+}
+
+.react-datepicker__time-list-item--selected {
+  background-color: #0f766e !important;
+  color: white !important;
+}
+
+.react-datepicker__time-list-item:hover {
+  background-color: #e6f4f1 !important;
+}
+
+/* ================= INPUT ================= */
+
+.react-datepicker__input-container input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.react-datepicker__input-container input:focus {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.2);
+}
+
+/* ================= POPUP FIX ================= */
+
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
+
+/* ================= ANIMATION ================= */
+
+.react-datepicker {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

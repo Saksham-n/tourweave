@@ -38,13 +38,7 @@ const MadhyaPradesh = () => {
   const [hoveredDistrict, setHoveredDistrict] = useState(null);
   const navigate = useNavigate();
 
-  // Data from mp.html
-  const districtImages = {
-    'Burhanpur': 'https://via.placeholder.com/400x300/96CEB4/FFFFFF?text=Burhanpur',
-    'Chhindwara': 'https://via.placeholder.com/400x300/FECA57/FFFFFF?text=Chhindwara',
-    'Sehore': 'https://via.placeholder.com/400x300/28AFB0/FFFFFF?text=Sehore',
-    // ... add others as needed
-  };
+
 
   const districtDescriptions = {
             'Burhanpur': 'Burhanpur is known for its rich history and was once the capital of the Faruqi dynasty. The district is famous for its handloom sarees and traditional crafts. It\'s located on the banks of the Tapti River and has numerous historical monuments.',
@@ -107,9 +101,7 @@ const MadhyaPradesh = () => {
     ? (districtDescriptions[activeDistrict] || 'Information about this district is not available.')
     : 'Madhya Pradesh, the "Heart of India," is a land of ancient history, rich culture, and diverse wildlife. From the erotic temples of Khajuraho to the tiger reserves of Kanha and Bandhavgarh, it offers a journey through time and nature.';
   
-  const activeImage = activeDistrict 
-    ? (districtImages[activeDistrict] || 'https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=No+Image')
-    : '/images/mp.webp';
+  const activeImage ='/images/mp.webp';
 
   // Styles specific to MP
   const mpStyles = {
@@ -191,9 +183,9 @@ const MadhyaPradesh = () => {
                 <i className="fa-solid fa-seedling"></i>
             </div>
             <div className="action-buttons">
-              <button className="pill-btn btn-gallery" style={{ backgroundColor: 'var(--btn-gallery)', color: 'white' }}>
+              {/* <button className="pill-btn btn-gallery" style={{ backgroundColor: 'var(--btn-gallery)', color: 'white' }}>
                 <i className="fa-regular fa-images"></i> Gallery
-              </button>
+              </button> */}
               <button className="pill-btn btn-planner" style={{ backgroundColor: 'var(--btn-planner)', color: 'white' }}>
                 <i className="fa-solid fa-wand-magic-sparkles"></i> AI Planner
               </button>
