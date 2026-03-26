@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createTrip, getUserTrips, deleteTrip } from '../services/user/tripService';
+import { getTravelDNA } from '../services/user/dnaService';
+import { generateItinerary, saveItinerary, getItinerary } from '../services/ai/itineraryService';
+import ItineraryView from './ItineraryView';
 import { sendInvitation } from '../services/user/invitationService';
 import './TripsDashboard.css';
 

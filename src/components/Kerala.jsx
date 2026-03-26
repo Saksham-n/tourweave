@@ -146,7 +146,11 @@ const Kerala = () => {
               {/* <button className="pill-btn btn-gallery" style={{ backgroundColor: 'var(--btn-gallery)', color: 'white' }}>
                 <i className="fa-regular fa-images"></i> Gallery
               </button> */}
-              <button className="pill-btn btn-planner" style={{ backgroundColor: 'var(--btn-planner)', color: 'white' }}>
+              <button 
+                className="pill-btn btn-planner" 
+                style={{ backgroundColor: 'var(--btn-planner)', color: 'white' }}
+                onClick={() => navigate('/planner/Kerala')}
+              >
                 <i className="fa-solid fa-wand-magic-sparkles"></i> AI Planner
               </button>
             </div>

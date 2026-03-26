@@ -134,7 +134,11 @@ const Goa = () => {
               {/* <button className="pill-btn btn-gallery" style={{ backgroundColor: 'var(--btn-gallery)', color: 'white' }}>
                 <i className="fa-regular fa-images"></i> Gallery
               </button> */}
-              <button className="pill-btn btn-planner" style={{ backgroundColor: 'var(--btn-planner)', color: 'var(--text-primary)' }}>
+              <button 
+                className="pill-btn btn-planner" 
+                style={{ backgroundColor: 'var(--btn-planner)', color: 'var(--text-primary)' }}
+                onClick={() => navigate('/planner/Goa')}
+              >
                 <i className="fa-solid fa-wand-magic-sparkles"></i> AI Planner
               </button>
             </div>

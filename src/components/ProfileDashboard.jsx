@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getProfile, updateProfile } from '../services/user/profileService';
 import { getTravelDNA, upsertTravelDNA } from '../services/user/dnaService';
 import { getJournalStats } from '../services/user/journalService';
 import ExpenseModule from './expense/ExpenseModule';
+import { buildPreferenceProfile } from '../services/ai/preferenceService';
 import './ProfileDashboard.css';
 
 const ProfileDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const saveTimerRef = useRef(null);
 
   // Profile State
   const [, setProfile] = useState(null);
@@ -19,21 +21,33 @@ const ProfileDashboard = () => {
   const [profMsg, setProfMsg] = useState(null);
   const [savingProf, setSavingProf] = useState(false);
 
-  // DNA State
-  const [, setDna] = useState(null);
+  // DNA Form State
+  const [dnaLoading, setDnaLoading] = useState(true); // true until first fetch completes
   const [budget, setBudget] = useState('Moderate');
   const [travelStyle, setTravelStyle] = useState('');
   const [interests, setInterests] = useState('');
   const [destinations, setDestinations] = useState('');
   const [dnaMsg, setDnaMsg] = useState(null);
   const [savingDna, setSavingDna] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Journal Stats State
+  // Journal Stats
   const [journalStats, setJournalStats] = useState({ totalEntries: 0, averageSentiment: 0.5, mood: 'neutral' });
   const [activeDropdown, setActiveDropdown] = useState(null);
 
+  // Compute normalized AI Preference Profile
+  const preferenceProfile = useMemo(() => {
+    const intArr = typeof interests === 'string' ? interests.split(',').map(s => s.trim()).filter(Boolean) : [];
+    const destArr = typeof destinations === 'string' ? destinations.split(',').map(s => s.trim()).filter(Boolean) : [];
+    return buildPreferenceProfile({
+      budget,
+      travel_style: travelStyle,
+      interests: intArr,
+      preferred_destinations: destArr
+    });
+  }, [budget, travelStyle, interests, destinations]);
+
   useEffect(() => {
-    // Escalate to top of page on mount
     window.scrollTo(0, 0);
 
     // Close dropdowns on outside click
@@ -45,29 +59,56 @@ const ProfileDashboard = () => {
     document.addEventListener('click', handleOutsideClick);
 
     const loadData = async () => {
-      if (!user) return;
-      
-      const { profile: pData } = await getProfile(user.id);
-      if (pData) {
-        setProfile(pData);
-        setDisplayName(pData.display_name || '');
-        setBio(pData.bio || '');
-        setLocation(pData.location || '');
+      if (!user) {
+        setDnaLoading(false);
+        return;
       }
 
-      const { dna: dData } = await getTravelDNA(user.id);
-      if (dData) {
-        setDna(dData);
-        setBudget(dData.budget || 'Moderate');
-        setTravelStyle(dData.travel_style || '');
-        setInterests((dData.interests || []).join(', '));
-        setDestinations((dData.preferred_destinations || []).join(', '));
+      // ── Step 1: read from localStorage INSTANTLY (no network, no spinner) ──
+      const cacheKey = `tourweave_dna_${user.id}`;
+      try {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+          const c = JSON.parse(cached);
+          setBudget(c.budget || 'Moderate');
+          setTravelStyle(c.travel_style || '');
+          setInterests((c.interests || []).join(', '));
+          setDestinations((c.preferred_destinations || []).join(', '));
+          setDnaLoading(false); // ← spinner gone instantly on revisits
+        }
+      } catch { /* ignore parse errors */ }
+
+      // ── Step 2: silently fetch fresh data from Supabase in background ──
+      try {
+        const { dna: dData, error: dnaError } = await getTravelDNA(user.id);
+        if (dnaError) {
+          console.error('getTravelDNA error:', dnaError);
+        } else if (dData) {
+          setBudget(dData.budget || 'Moderate');
+          setTravelStyle(dData.travel_style || '');
+          setInterests((dData.interests || []).join(', '));
+          setDestinations((dData.preferred_destinations || []).join(', '));
+          localStorage.setItem(cacheKey, JSON.stringify(dData)); // keep cache fresh
+        }
+      } catch (e) {
+        console.error('DNA fetch error:', e);
+      } finally {
+        setDnaLoading(false); // in case there was no cache (first-ever visit)
       }
 
-      // Load journal stats
-      const statsResult = await getJournalStats(user.id);
-      if (statsResult.success) {
-        setJournalStats(statsResult.data);
+      // ── Step 3: profile + stats in background ──
+      try {
+        const { profile: pData } = await getProfile(user.id);
+        if (pData) {
+          setProfile(pData);
+          setDisplayName(pData.display_name || '');
+          setBio(pData.bio || '');
+          setLocation(pData.location || '');
+        }
+        const statsResult = await getJournalStats(user.id);
+        if (statsResult.success) setJournalStats(statsResult.data);
+      } catch (e) {
+        console.error('Profile/stats load error:', e);
       }
     };
 
@@ -78,35 +119,54 @@ const ProfileDashboard = () => {
   const handleSaveProfile = async () => {
     setSavingProf(true);
     setProfMsg(null);
-    const { error } = await updateProfile(user.id, {
-      display_name: displayName,
-      bio,
-      location
-    });
-
+    const { error } = await updateProfile(user.id, { display_name: displayName, bio, location });
     if (error) setProfMsg({ type: 'error', text: error.message });
     else setProfMsg({ type: 'success', text: 'Identity Profile permanently saved.' });
     setSavingProf(false);
   };
 
   const handleSaveDNA = async () => {
+    if (!user?.id) {
+      setDnaMsg({ type: 'error', text: 'Not logged in. Please sign in.' });
+      return;
+    }
+
     setSavingDna(true);
+    setSaveSuccess(false);
     setDnaMsg(null);
 
-    const intArr = interests.split(',').map(s => s.trim()).filter(Boolean);
-    const destArr = destinations.split(',').map(s => s.trim()).filter(Boolean);
+    try {
+      const intArr = interests.split(',').map(s => s.trim()).filter(Boolean);
+      const destArr = destinations.split(',').map(s => s.trim()).filter(Boolean);
 
-    const { error } = await upsertTravelDNA(user.id, {
-      budget,
-      travel_style: travelStyle,
-      interests: intArr,
-      preferred_destinations: destArr
-    });
+      const { error } = await upsertTravelDNA(user.id, {
+        budget,
+        travel_style: travelStyle,
+        interests: intArr,
+        preferred_destinations: destArr,
+      });
 
-    if (error) setDnaMsg({ type: 'error', text: error.message });
-    else setDnaMsg({ type: 'success', text: 'AI Travel DNA permanently calibrated.' });
+      if (error) {
+        setDnaMsg({ type: 'error', text: `Save failed: ${error.message}` });
+      } else {
+        // Update localStorage cache immediately on save
+        const intArr2 = interests.split(',').map(s => s.trim()).filter(Boolean);
+        const destArr2 = destinations.split(',').map(s => s.trim()).filter(Boolean);
+        localStorage.setItem(`tourweave_dna_${user.id}`, JSON.stringify({
+          budget, travel_style: travelStyle, interests: intArr2, preferred_destinations: destArr2
+        }));
+        setSaveSuccess(true);
+        setDnaMsg({ type: 'success', text: '✅ DNA calibrated and saved successfully.' });
+        setTimeout(() => setSaveSuccess(false), 2500);
+      }
+    } catch (e) {
+      console.error('🧬 Unexpected error:', e);
+      setDnaMsg({ type: 'error', text: `Unexpected error: ${e.message}` });
+    }
+
     setSavingDna(false);
   };
+
 
   return (
     <div className="profile-page-container">
@@ -340,31 +400,19 @@ const ProfileDashboard = () => {
         }
       `}</style>
       <div className="profile-overlay"></div>
-      
+
       <div className="profile-wrapper">
+        {/* NAV */}
         <nav className="profile-nav">
           <div className="profile-logo" onClick={() => navigate('/')}>TourWeave</div>
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <span 
-              onClick={() => navigate('/trips')} 
-              style={{ color: 'white', cursor: 'pointer', fontWeight: 600, borderBottom: '1px solid transparent', paddingBottom: '2px', transition: '0.3s' }}
-              onMouseEnter={e => e.currentTarget.style.borderBottomColor = 'white'}
-              onMouseLeave={e => e.currentTarget.style.borderBottomColor = 'transparent'}
-            >
-              My Trips
-            </span>
-            <span 
-              onClick={() => navigate('/journal')} 
-              style={{ color: 'white', cursor: 'pointer', fontWeight: 600, borderBottom: '1px solid transparent', paddingBottom: '2px', transition: '0.3s' }}
-              onMouseEnter={e => e.currentTarget.style.borderBottomColor = 'white'}
-              onMouseLeave={e => e.currentTarget.style.borderBottomColor = 'transparent'}
-            >
-              Journal
-            </span>
+            <span onClick={() => navigate('/trips')} className="nav-text-link">My Trips</span>
+            <span onClick={() => navigate('/journal')} className="nav-text-link">Journal</span>
             <button className="profile-back-btn" onClick={() => navigate('/')}>&larr; Home</button>
           </div>
         </nav>
 
+        {/* 2×2 GRID */}
         <div className="profile-grid">
 
           {/* COLUMN 1: TRAVEL DNA */}
@@ -435,29 +483,29 @@ const ProfileDashboard = () => {
           <div className="profile-card">
             <div className="card-header">
               <h2>Aesthetic Identity</h2>
-              <p>Configure outward-facing representations of your traveler persona across the collaborative platform.</p>
+              <p>Configure outward-facing representations of your traveler persona.</p>
             </div>
-
             <div className="pro-group">
               <label>Email</label>
-              <input type="text" className="pro-input" value={user?.email || ''} disabled style={{ background: '#eee', color: '#888', cursor: 'not-allowed' }}/>
+              <input type="text" className="pro-input" value={user?.email || ''} disabled
+                style={{ background: '#eee', color: '#888', cursor: 'not-allowed' }} />
             </div>
-
             <div className="pro-group">
               <label>Name</label>
-              <input type="text" className="pro-input" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="e.g. Marco Polo" />
+              <input type="text" className="pro-input" value={displayName}
+                onChange={e => setDisplayName(e.target.value)} placeholder="e.g. Marco Polo" />
             </div>
-
             <div className="pro-group">
               <label>Origin Location</label>
-              <input type="text" className="pro-input" value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. New Delhi, India" />
+              <input type="text" className="pro-input" value={location}
+                onChange={e => setLocation(e.target.value)} placeholder="e.g. New Delhi, India" />
             </div>
-
             <div className="pro-group">
               <label>Adventurer Bio</label>
-              <textarea className="pro-input pro-textarea" value={bio} onChange={e => setBio(e.target.value)} placeholder="Tell the community what drives your wanderlust..."></textarea>
+              <textarea className="pro-input pro-textarea" value={bio}
+                onChange={e => setBio(e.target.value)}
+                placeholder="Tell the community what drives your wanderlust..." />
             </div>
-
             <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {profMsg && <div className={`pro-msg ${profMsg.type}`} style={{ margin: 0 }}>{profMsg.text}</div>}
               <button className="pro-save-btn" onClick={handleSaveProfile} disabled={savingProf} style={{ margin: 0 }}>
@@ -478,32 +526,101 @@ const ProfileDashboard = () => {
               <p>Track your travel memories and emotional journey.</p>
             </div>
 
-            <div className="journal-stats">
-              <div className="stat-item">
-                <div className="stat-label">Total Entries</div>
-                <div className="stat-value">{journalStats.totalEntries}</div>
+            {dnaLoading ? (
+              <div className="pref-loading-state">
+                <div className="pref-loading-spinner" />
+                <p>Loading your preference profile…</p>
               </div>
-
-              <div className="stat-item">
-                <div className="stat-label">Average Mood</div>
-                <div className="stat-value" style={{
-                  color: journalStats.mood === 'positive' ? '#10b981' : journalStats.mood === 'negative' ? '#ef4444' : '#f59e0b'
-                }}>
-                  {journalStats.mood}
+            ) : preferenceProfile ? (
+              <>
+                {/* Personality Hero */}
+                <div className="pref-hero-banner">
+                  <span className="pref-hero-emoji">{preferenceProfile.personality.emoji}</span>
+                  <div className="pref-hero-text">
+                    <div className="pref-hero-name">{preferenceProfile.personality.title}</div>
+                    <div className="pref-hero-tagline">{preferenceProfile.personality.subtitle}</div>
+                  </div>
+                  <div className="pref-hero-chips">
+                    <span className="pref-meta-chip">
+                      {preferenceProfile.budgetMeta.emoji} {preferenceProfile.budget}
+                    </span>
+                    {preferenceProfile.styleMeta && (
+                      <span className="pref-meta-chip">
+                        {preferenceProfile.styleMeta.emoji} {preferenceProfile.style}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <div className="stat-item">
-                <div className="stat-label">Positivity Score</div>
-                <div className="stat-value">{Math.round(journalStats.averageSentiment * 100)}%</div>
-              </div>
-            </div>
+                {/* Data Blocks */}
+                <div className="pref-blocks">
+                  <div className="pref-data-block">
+                    <div className="pref-block-label">BUDGET TIER</div>
+                    <div className="pref-block-value">{preferenceProfile.budgetMeta.emoji} {preferenceProfile.budgetMeta.label}</div>
+                    <div className="pref-block-desc">{preferenceProfile.budgetMeta.description}</div>
+                  </div>
 
-            <div style={{ marginTop: 'auto' }}>
-              <button className="pro-save-btn" onClick={() => navigate('/journal')} style={{ background: '#1b803a', margin: 0 }}>
-                Open Journal
-              </button>
-            </div>
+                  <div className="pref-data-block">
+                    <div className="pref-block-label">TRAVEL STYLE</div>
+                    {preferenceProfile.styleMeta ? (
+                      <>
+                        <div className="pref-block-value">{preferenceProfile.styleMeta.emoji} {preferenceProfile.style}</div>
+                        <div className="pref-trait-pills">
+                          {preferenceProfile.styleMeta.traits.map(t => (
+                            <span key={t} className="pref-trait-pill">{t}</span>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="pref-block-empty">Choose a style ←</div>
+                    )}
+                  </div>
+
+                  <div className="pref-data-block pref-block-wide">
+                    <div className="pref-block-label">INTERESTS</div>
+                    {preferenceProfile.taggedInterests.length > 0 ? (
+                      <div className="pref-interest-pills">
+                        {preferenceProfile.taggedInterests.map((tag, i) => (
+                          <span key={i} className="pref-interest-pill">{tag.text}</span>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="pref-block-empty">Type your interests ←</div>
+                    )}
+                  </div>
+
+                  <div className="pref-data-block pref-block-wide">
+                    <div className="pref-block-label">AI-MATCHED DESTINATIONS</div>
+                    {preferenceProfile.styleMeta?.destinations ? (
+                      <div className="pref-dest-pills">
+                        {preferenceProfile.styleMeta.destinations.map(dest => (
+                          <span key={dest} className="pref-dest-pill">📍 {dest}</span>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="pref-block-empty">Set a travel style to unlock ←</div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Completeness Bar */}
+                <div className="pref-completeness-bar-section">
+                  <div className="pref-completeness-bar-header">
+                    <span className="pref-bar-title">DNA Completeness</span>
+                    <span className="pref-bar-pct">{preferenceProfile.completenessScore}%</span>
+                  </div>
+                  <div className="pref-progress-track">
+                    <div className="pref-progress-fill" style={{ width: `${preferenceProfile.completenessScore}%` }} />
+                  </div>
+                  <div className="pref-bar-hint">
+                    {preferenceProfile.completenessScore < 55 && '→ Choose a Travel Style to unlock insights.'}
+                    {preferenceProfile.completenessScore >= 55 && preferenceProfile.completenessScore < 80 && '→ Add Core Interests for smarter matches.'}
+                    {preferenceProfile.completenessScore >= 80 && preferenceProfile.completenessScore < 100 && '→ Add Dream Destinations to complete.'}
+                    {preferenceProfile.completenessScore === 100 && '✅ Fully calibrated — AI recommendations at maximum.'}
+                  </div>
+                </div>
+              </>
+            ) : null}
           </div>
 
         </div>

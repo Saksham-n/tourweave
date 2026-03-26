@@ -183,6 +183,17 @@ const LandingPage = () => {
     }
   }, [location, navigate]);
 
+  // Search Widget State
+  const [searchDest, setSearchDest] = useState('');
+  const [searchInterest, setSearchInterest] = useState('Heritage');
+  const [searchType, setSearchType] = useState('Hill Side');
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!searchDest.trim()) return;
+    navigate(`/recommendations?dest=${encodeURIComponent(searchDest)}&interest=${encodeURIComponent(searchInterest)}&type=${encodeURIComponent(searchType)}`);
+  };
+
   // Helper to render HTML strings safely (for <br> tags in translations)
   const renderHTML = (html) => ({ __html: html });
 
@@ -204,6 +215,11 @@ const LandingPage = () => {
             {user && (
               <a href="/trips" onClick={(e) => { e.preventDefault(); navigate('/trips'); }}>
                 {t.nav_about}
+              </a>
+            )}
+            {user && (
+              <a href="/patterns" onClick={(e) => { e.preventDefault(); navigate('/patterns'); }}>
+                Pattern Analysis
               </a>
             )}
             <a href="#contact-form">{t.nav_contact}</a>
@@ -268,28 +284,49 @@ const LandingPage = () => {
 
           <div className="booking-widget">
             <div className="widget-header">{t.widget_header}</div>
-            <form className="booking-form" onSubmit={(e) => { e.preventDefault(); window.location.href='#destinations'; }}>
+            <form className="booking-form" onSubmit={handleSearchSubmit}>
               <div className="form-group">
                 <label>{t.label_destination}</label>
-                <input type="text" className="form-input" placeholder={t.placeholder_where} />
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder={t.placeholder_where} 
+                  value={searchDest}
+                  onChange={e => setSearchDest(e.target.value)}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label>{t.label_interest}</label>
-                <div className="custom-select">
-                    <div className="dropdown-trigger">
-                        <span>{t.opt_heritage}</span>
-                        <i className="fa-solid fa-chevron-down" style={{ fontSize: '0.7rem', marginLeft: 'auto' }}></i>
-                    </div>
-                </div>
+                <select 
+                  className="form-input"
+                  style={{ cursor: 'pointer', appearance: 'auto' }}
+                  value={searchInterest}
+                  onChange={e => setSearchInterest(e.target.value)}
+                >
+                  <option value="Heritage">Heritage</option>
+                  <option value="Nature">Nature</option>
+                  <option value="Spirituality">Spirituality</option>
+                  <option value="Adventure">Adventure</option>
+                  <option value="Food & Culinary">Food & Culinary</option>
+                  <option value="Wellness">Wellness</option>
+                </select>
               </div>
               <div className="form-group">
                 <label>{t.label_type}</label>
-                <div className="custom-select">
-                    <div className="dropdown-trigger">
-                        <span>{t.opt_hill}</span>
-                        <i className="fa-solid fa-chevron-down" style={{ fontSize: '0.7rem', marginLeft: 'auto' }}></i>
-                    </div>
-                </div>
+                <select 
+                  className="form-input"
+                  style={{ cursor: 'pointer', appearance: 'auto' }}
+                  value={searchType}
+                  onChange={e => setSearchType(e.target.value)}
+                >
+                  <option value="Hill Side">Hill Side</option>
+                  <option value="Lake Side">Lake Side</option>
+                  <option value="Forest">Forest</option>
+                  <option value="Beach">Beach</option>
+                  <option value="Desert">Desert</option>
+                  <option value="City Explorer">City Explorer</option>
+                </select>
               </div>
               <button type="submit" className="search-btn">
                 <span className="btn-text-desktop"><b style={{ fontSize: '1.5rem' }}>&gt;</b></span>

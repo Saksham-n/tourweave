@@ -14,6 +14,9 @@ import TripsDashboard from './components/TripsDashboard';
 import TripDetail from './components/TripDetail';
 import JournalDashboard from './components/JournalDashboard';
 import ChatCopilot from './components/ChatCopilot';
+import PatternDashboard from './components/PatternDashboard';
+import StatePlanner from './components/StatePlanner';
+import RecommendationResult from './components/RecommendationResult';
 
 // ✅ Invite accept page
 import AcceptInvite from "./components/AcceptInvite";
@@ -26,6 +29,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth-test" element={<AuthTest />} />
+        <Route path="/recommendations" element={<RecommendationResult />} />
 
         {/* 🔥 IMPORTANT FIX */}
         {/* DO NOT protect this route */}
@@ -53,6 +57,18 @@ function App() {
         <Route path="/journal" element={
           <ProtectedRoute>
             <JournalDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/patterns" element={
+          <ProtectedRoute>
+            <PatternDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/planner/:stateId" element={
+          <ProtectedRoute>
+            <StatePlanner />
           </ProtectedRoute>
         } />
         
