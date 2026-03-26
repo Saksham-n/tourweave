@@ -114,7 +114,7 @@ const IndiaMap = () => {
           
           <div className="featured-image-container">
             <img 
-              src={activeInfo.image} 
+              src="/images/India.webp"
               className="featured-image" 
               alt={activeStateName} 
               onError={(e) => e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'}
