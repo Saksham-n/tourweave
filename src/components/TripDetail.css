@@ -64,7 +64,6 @@
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(11, 88, 81, 0.45);
-    backdrop-filter: blur(12px);
     z-index: 1;
 }
 
@@ -110,7 +109,6 @@
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 600;
-    backdrop-filter: blur(5px);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -235,7 +233,6 @@
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: 1000;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -289,6 +286,7 @@
 
 .form-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
@@ -329,7 +327,6 @@
     padding: 5rem 2rem;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 24px;
-    backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 

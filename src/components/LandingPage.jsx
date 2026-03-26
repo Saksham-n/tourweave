@@ -9,7 +9,7 @@ const translations = {
   en: {
     nav_home: "Home",
     nav_explore: "Explore",
-    nav_about: "About",
+    nav_about: "My Trips",
     nav_contact: "Contact",
     hero_title: "Escape the City,<br>Find Your Peace",
     widget_header: "Plan Your AI-Curated Journey",
@@ -47,11 +47,10 @@ const translations = {
     bottom_title: "A Popular Tourist<br>Hotspot Region",
     bottom_desc: "Embark on an Oasis Adventure: Discover the vibrant charms, scenic allure, and serene atmosphere of India's beloved tourist hotspots.",
     footer_brand: "The Official Tourism<br>Website for TourWeave",
-    link_things: "Things to Do",
-    link_dest: "Destinations",
+    link_things: "My Trips",
+    link_dest: "Journal",
     link_heritage: "Heritage Sites",
-    link_planner: "AI Planner",
-    link_contact: "Contact Us",
+    link_profile: "My Profile",
     contact_us_title: "Contact Us",
     agree_policy: "I agree to privacy policy",
     btn_send: "Send",
@@ -70,7 +69,7 @@ const translations = {
   hi: {
     nav_home: "होम",
     nav_explore: "एक्सप्लोर",
-    nav_about: "बारे में",
+    nav_about: "मेरी यात्राएँ",
     nav_contact: "संपर्क",
     hero_title: "शहर से दूर,<br>अपनी शांति खोजें",
     widget_header: "अपनी एआई-क्यूरेटेड यात्रा की योजना बनाएं",
@@ -108,11 +107,10 @@ const translations = {
     bottom_title: "एक लोकप्रिय पर्यटक<br>आकर्षण क्षेत्र",
     bottom_desc: "एक ओएसिस एडवेंचर पर निकलें: भारत के प्रिय पर्यटक आकर्षणों के जीवंत आकर्षण, सुंदर नज़ारों और शांत वातावरण की खोज करें।",
     footer_brand: "TourWeave की आधिकारिक<br>पर्यटन वेबसाइट",
-    link_things: "करने के लिए काम",
-    link_dest: "गंतव्य",
+    link_things: "मेरी यात्राएँ",
+    link_dest: "जर्नल",
     link_heritage: "विरासत स्थल",
-    link_planner: "एआई प्लानर",
-    link_contact: "संपर्क करें",
+    link_profile: "मेरा प्रोफ़ाइल",
     contact_us_title: "संपर्क करें",
     agree_policy: "मैं गोपनीयता नीति से सहमत हूं",
     btn_send: "भेजें",
@@ -141,10 +139,15 @@ const LandingPage = () => {
   
   const navigate = useNavigate();
   const location = useLocation();
-  const [t, setT] = useState(translations[lang]); // Changed from direct assignment to state
+  const [t, setT] = useState(translations.en);
   const [sent, setSent] = useState(false);
 
-  // Handle Scroll for Vertical Nav
+  // Update translations when language changes
+  useEffect(() => {
+    setT(translations[lang]);
+  }, [lang]);
+
+    // Handle Scroll for Vertical Nav
   useEffect(() => {
     const handleScroll = () => {
       const destSection = document.getElementById('destinations');
@@ -200,7 +203,7 @@ const LandingPage = () => {
             <a href="#destinations">{t.nav_explore}</a>
             {user && (
               <a href="/trips" onClick={(e) => { e.preventDefault(); navigate('/trips'); }}>
-                My Trips
+                {t.nav_about}
               </a>
             )}
             <a href="#contact-form">{t.nav_contact}</a>
@@ -448,11 +451,10 @@ const LandingPage = () => {
 
                 <div className="footer-links">
                     <ul>
-                        <li><a href="#">{t.link_things}</a></li>
-                        <li><a href="#">{t.link_dest}</a></li>
-                        <li><a href="#">{t.link_heritage}</a></li>
-                        <li><a href="#">{t.link_planner}</a></li>
-                        <li><a href="#">{t.link_contact}</a></li>
+                        <li><a href="/profile">{t.link_profile}</a></li>
+                        <li><a href="/trips">{t.link_things}</a></li>
+                        <li><a href="/journal">{t.link_dest}</a></li>
+                        <li><a href="#destinations">{t.link_heritage}</a></li>
                     </ul>
                 </div>
 

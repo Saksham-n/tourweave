@@ -17,6 +17,8 @@ const TripsDashboard = () => {
     end_date: ''
   });
   const [isSpawning, setIsSpawning] = useState(false);
+  const [activeDatePicker, setActiveDatePicker] = useState(null);
+  const [viewDate, setViewDate] = useState(new Date());
 
   // ✅ Delete/Invite states
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -36,7 +38,27 @@ const TripsDashboard = () => {
 
   useEffect(() => {
     fetchTrips();
+
+    // Close datepicker when clicking outside
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.date-input-group')) {
+        setActiveDatePicker(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [user]);
+
+  // Auto-jump to the selected date's month when opening the datepicker
+  useEffect(() => {
+    if (activeDatePicker === 'start' && newTrip.start_date) {
+      const [y, m, d] = newTrip.start_date.split('-');
+      setViewDate(new Date(y, m - 1, d));
+    } else if (activeDatePicker === 'end' && newTrip.end_date) {
+      const [y, m, d] = newTrip.end_date.split('-');
+      setViewDate(new Date(y, m - 1, d));
+    }
+  }, [activeDatePicker, newTrip.start_date, newTrip.end_date]);
 
   const handleSpawnTrip = async () => {
     if (!newTrip.name.trim()) {
@@ -118,6 +140,47 @@ const TripsDashboard = () => {
     }
   };
 
+  const renderDatePicker = (type) => {
+    const isStart = type === 'start';
+    const value = isStart ? newTrip.start_date : newTrip.end_date;
+    
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const startDay = new Date(year, month, 1).getDay(); // 0 = Sunday, 6 = Saturday
+    
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    return (
+      <div className={`datepicker-card ${activeDatePicker === type ? 'show' : ''}`}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold', marginBottom: '10px', color: '#0b5851' }}>
+          <span style={{ cursor: 'pointer', padding: '0 5px' }} onClick={() => setViewDate(new Date(year, month - 1, 1))}>&lt;</span>
+          <span>{monthNames[month]} {year}</span>
+          <span style={{ cursor: 'pointer', padding: '0 5px' }} onClick={() => setViewDate(new Date(year, month + 1, 1))}>&gt;</span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginBottom: '8px', textAlign: 'center', fontSize: '0.75rem', fontWeight: 600, color: '#666' }}>
+          <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+          {Array.from({ length: startDay }).map((_, i) => (
+            <div key={`empty-${i}`} className="dp-date empty" style={{ cursor: 'default' }}></div>
+          ))}
+          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            return (
+              <div key={day} className={`dp-date ${value === dateStr ? 'selected' : ''}`} onClick={() => {
+                setNewTrip({ ...newTrip, [isStart ? 'start_date' : 'end_date']: dateStr });
+                setActiveDatePicker(null);
+              }}>
+                {day}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="trips-page-container">
       <div className="trips-overlay"></div>
@@ -156,18 +219,26 @@ const TripsDashboard = () => {
             <div className="date-input-group">
               <label>Starts</label>
               <input 
-                type="date" 
+                type="text" 
+                placeholder="Select start date..."
                 value={newTrip.start_date} 
-                onChange={e => setNewTrip({...newTrip, start_date: e.target.value})}
+                onClick={() => setActiveDatePicker(activeDatePicker === 'start' ? null : 'start')}
+                readOnly
+                style={{ cursor: 'pointer' }}
               />
+              {renderDatePicker('start')}
             </div>
             <div className="date-input-group">
               <label>Ends</label>
               <input 
-                type="date" 
+                type="text" 
+                placeholder="Select end date..."
                 value={newTrip.end_date} 
-                onChange={e => setNewTrip({...newTrip, end_date: e.target.value})}
+                onClick={() => setActiveDatePicker(activeDatePicker === 'end' ? null : 'end')}
+                readOnly
+                style={{ cursor: 'pointer' }}
               />
+              {renderDatePicker('end')}
             </div>
             <button onClick={handleSpawnTrip} disabled={isSpawning} className="spawn-btn">
               {isSpawning ? 'Spawning...' : 'Create Trip'}

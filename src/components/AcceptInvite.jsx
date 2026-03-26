@@ -54,7 +54,6 @@ export default function AcceptInvite() {
         background: 'rgba(255,255,255,0.1)',
         padding: '3rem',
         borderRadius: '24px',
-        backdropFilter: 'blur(10px)',
         textAlign: 'center',
         boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
         maxWidth: '400px'

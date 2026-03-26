@@ -38,23 +38,6 @@ const Kerala = () => {
   const [hoveredDistrict, setHoveredDistrict] = useState(null);
   const navigate = useNavigate();
 
-  const districtImages = {
-    'Kasaragod': '/images/k.',
-    'Kannur': '/images/ka.jpeg',
-    'Wayanad': '/images/w.',
-    'Kozhikode': 'https://via.placeholder.com/400x300/96CEB4/FFFFFF?text=Kozhikode',
-    'Malappuram': 'https://via.placeholder.com/400x300/FECA57/FFFFFF?text=Malappuram',
-    'Palakkad': 'https://via.placeholder.com/400x300/FF9FF3/FFFFFF?text=Palakkad',
-    'Thrissur': 'https://via.placeholder.com/400x300/54A0FF/FFFFFF?text=Thrissur',
-    'Ernakulam': 'https://via.placeholder.com/400x300/5F27CD/FFFFFF?text=Ernakulam',
-    'Idukki': 'https://via.placeholder.com/400x300/00D2D3/FFFFFF?text=Idukki',
-    'Kottayam': 'https://via.placeholder.com/400x300/FF9F43/FFFFFF?text=Kottayam',
-    'Alappuzha': 'https://via.placeholder.com/400x300/EE5A24/FFFFFF?text=Alappuzha',
-    'Pathanamthitta': 'https://via.placeholder.com/400x300/0ABDE3/FFFFFF?text=Pathanamthitta',
-    'Kollam': 'https://via.placeholder.com/400x300/10AC84/FFFFFF?text=Kollam',
-    'Thiruvananthapuram': '/images/t.'
-  };
-
   const districtDescriptions = {
             'Kasaragod': 'Known for its rich cultural heritage, Kasaragod is famous for the traditional Theyyam dance and the historic Bekal Fort. It\'s the northernmost district of Kerala with beautiful beaches and a blend of Tulu and Malayalam cultures.',
             'Kannur': 'Famous for its martial arts tradition (Kalaripayattu), Kannur is home to the historic St. Angelo Fort and beautiful beaches. The district is known for its handloom industry and traditional arts.',
@@ -78,9 +61,7 @@ const Kerala = () => {
     ? (districtDescriptions[activeDistrict] || 'No description available for this district.')
     : 'Kerala, God\'s Own Country, is known for its palm-lined beaches, backwaters, a network of canals, and rich cultural heritage.';
   
-  const activeImage = activeDistrict 
-    ? (districtImages[activeDistrict] || 'https://via.placeholder.com/400x300/CCCCCC/FFFFFF?text=No+Image')
-    : '/images/mh.webp';
+  const activeImage = '/images/mh.webp';
 
   // Styles specific to Kerala
   const keralaStyles = {
@@ -162,9 +143,9 @@ const Kerala = () => {
                 <i className="fa-solid fa-leaf"></i>
             </div>
             <div className="action-buttons">
-              <button className="pill-btn btn-gallery" style={{ backgroundColor: 'var(--btn-gallery)', color: 'white' }}>
+              {/* <button className="pill-btn btn-gallery" style={{ backgroundColor: 'var(--btn-gallery)', color: 'white' }}>
                 <i className="fa-regular fa-images"></i> Gallery
-              </button>
+              </button> */}
               <button className="pill-btn btn-planner" style={{ backgroundColor: 'var(--btn-planner)', color: 'white' }}>
                 <i className="fa-solid fa-wand-magic-sparkles"></i> AI Planner
               </button>

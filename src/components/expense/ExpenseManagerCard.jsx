@@ -55,6 +55,7 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
   const [checkingRemove, setCheckingRemove] = useState(false);
   const [deletingParticipant, setDeletingParticipant] = useState(false);
   const [toastMsg, setToastMsg] = useState(null);
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const fileRef = useRef(null);
 
@@ -69,6 +70,16 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
       return next;
     });
   }, [namesKey]);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (!e.target.closest('.pro-custom-select')) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, []);
 
   useEffect(() => {
     const list = namesKey ? JSON.parse(namesKey) : [];
@@ -334,25 +345,37 @@ function ExpenseManagerCard({ user, groupId, participantRows, suggestedNames, re
 
         <div className="pro-group">
           <label>Payer</label>
-          <select className="pro-select" value={payerName} onChange={(e) => setPayerName(e.target.value)} disabled={!names.length}>
-            <option value="">Select who paid</option>
-            {names.map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
+          <div className={`pro-custom-select ${activeDropdown === 'payer' ? 'active' : ''} ${!names.length ? 'disabled' : ''}`}>
+            <div className="pro-select-trigger" onClick={() => names.length && setActiveDropdown(activeDropdown === 'payer' ? null : 'payer')}>
+              <span>{payerName || 'Select who paid'}</span>
+              <svg className="pro-select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div className="pro-select-dropdown">
+              <div className={`pro-select-option ${payerName === '' ? 'selected' : ''}`} onClick={() => { setPayerName(''); setActiveDropdown(null); }}>Select who paid</div>
+              {names.map((n) => (
+                <div key={n} className={`pro-select-option ${payerName === n ? 'selected' : ''}`} onClick={() => { setPayerName(n); setActiveDropdown(null); }}>
+                  {n}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="pro-group">
           <label>Split type</label>
-          <select className="pro-select" value={splitType} onChange={(e) => setSplitType(e.target.value)}>
-            {SPLIT_TYPES.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
-            ))}
-          </select>
+          <div className={`pro-custom-select ${activeDropdown === 'split' ? 'active' : ''}`}>
+            <div className="pro-select-trigger" onClick={() => setActiveDropdown(activeDropdown === 'split' ? null : 'split')}>
+              <span>{SPLIT_TYPES.find(t => t.value === splitType)?.label || 'Select split type'}</span>
+              <svg className="pro-select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div className="pro-select-dropdown">
+              {SPLIT_TYPES.map((t) => (
+                <div key={t.value} className={`pro-select-option ${splitType === t.value ? 'selected' : ''}`} onClick={() => { setSplitType(t.value); setActiveDropdown(null); }}>
+                  {t.label}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {splitType !== 'equal' && selectedForSplit.length > 0 && (
