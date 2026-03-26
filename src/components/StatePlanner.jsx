@@ -17,6 +17,10 @@ const StatePlanner = () => {
   const [itinerary, setItinerary] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
+  const [isDaysOpen, setIsDaysOpen] = useState(false);
+  const [isBudgetOpen, setIsBudgetOpen] = useState(false);
+  const [isStyleOpen, setIsStyleOpen] = useState(false);
+
   const formattedState = stateId ? decodeURIComponent(stateId) : 'Madhya Pradesh';
 
   const handleGenerate = async (e) => {
@@ -69,32 +73,64 @@ const StatePlanner = () => {
             <form onSubmit={handleGenerate}>
               <div className="planner-group">
                 <label>Number of Days</label>
-                <select className="planner-select" value={days} onChange={e => setDays(e.target.value)}>
-                  {[1, 2, 3, 4, 5, 6, 7, 10, 14].map(d => (
-                    <option key={d} value={d}>{d} {d === 1 ? 'Day' : 'Days'}</option>
-                  ))}
-                </select>
+                <div className={`custom-select ${isDaysOpen ? 'active' : ''}`}>
+                  <div className="dropdown-trigger" onClick={() => { setIsDaysOpen(!isDaysOpen); setIsBudgetOpen(false); setIsStyleOpen(false); }}>
+                    <span>{days} {parseInt(days) === 1 ? 'Day' : 'Days'}</span>
+                    <svg className="dropdown-arrow" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  <div className="dropdown-content">
+                    {[1, 2, 3, 4, 5, 6, 7, 10, 14].map(d => (
+                      <div key={d} className="dropdown-option" onClick={() => { setDays(d); setIsDaysOpen(false); }}>
+                        {d} {d === 1 ? 'Day' : 'Days'}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div className="planner-group">
                 <label>Budget Tier</label>
-                <select className="planner-select" value={budget} onChange={e => setBudget(e.target.value)}>
-                  <option value="Budget">Budget / Backpacker (₹)</option>
-                  <option value="Moderate">Moderate / Standard (₹₹)</option>
-                  <option value="Luxury">Luxury / Premium (₹₹₹)</option>
-                </select>
+                <div className={`custom-select ${isBudgetOpen ? 'active' : ''}`}>
+                  <div className="dropdown-trigger" onClick={() => { setIsBudgetOpen(!isBudgetOpen); setIsDaysOpen(false); setIsStyleOpen(false); }}>
+                    <span>{budget === 'Budget' ? 'Budget / Backpacker (₹)' : budget === 'Moderate' ? 'Moderate / Standard (₹₹)' : 'Luxury / Premium (₹₹₹)'}</span>
+                    <svg className="dropdown-arrow" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  <div className="dropdown-content">
+                    <div className="dropdown-option" onClick={() => { setBudget('Budget'); setIsBudgetOpen(false); }}>Budget / Backpacker (₹)</div>
+                    <div className="dropdown-option" onClick={() => { setBudget('Moderate'); setIsBudgetOpen(false); }}>Moderate / Standard (₹₹)</div>
+                    <div className="dropdown-option" onClick={() => { setBudget('Luxury'); setIsBudgetOpen(false); }}>Luxury / Premium (₹₹₹)</div>
+                  </div>
+                </div>
               </div>
 
               <div className="planner-group">
                 <label>Travel Style</label>
-                <select className="planner-select" value={style} onChange={e => setStyle(e.target.value)}>
-                  <option value="Cultural / Heritage">Cultural / Heritage 🏛️</option>
-                  <option value="Adventure / Adrenaline">Adventure / Adrenaline 🏔️</option>
-                  <option value="Nature / Wildlife">Nature / Wildlife 🌿</option>
-                  <option value="Relaxation / Beaches">Relaxation / Beach 🌊</option>
-                  <option value="Urban / City Exploration">Urban / City 🏙️</option>
-                  <option value="Spiritual / Pilgrimage">Spiritual / Pilgrimage 🕉️</option>
-                </select>
+                <div className={`custom-select ${isStyleOpen ? 'active' : ''}`}>
+                  <div className="dropdown-trigger" onClick={() => { setIsStyleOpen(!isStyleOpen); setIsDaysOpen(false); setIsBudgetOpen(false); }}>
+                    <span>{style === 'Urban / City Exploration' ? 'Urban / City' : style === 'Relaxation / Beaches' ? 'Relaxation / Beach' : style}</span>
+                    <svg className="dropdown-arrow" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  <div className="dropdown-content">
+                    {[
+                      { val: 'Cultural / Heritage', label: 'Cultural / Heritage' },
+                      { val: 'Adventure / Adrenaline', label: 'Adventure / Adrenaline' },
+                      { val: 'Nature / Wildlife', label: 'Nature / Wildlife' },
+                      { val: 'Relaxation / Beaches', label: 'Relaxation / Beach' },
+                      { val: 'Urban / City Exploration', label: 'Urban / City' },
+                      { val: 'Spiritual / Pilgrimage', label: 'Spiritual / Pilgrimage' }
+                    ].map(opt => (
+                      <div key={opt.val} className="dropdown-option" onClick={() => { setStyle(opt.val); setIsStyleOpen(false); }}>
+                        {opt.label}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div className="planner-group">

@@ -1,7 +1,7 @@
 .trips-page-container {
     min-height: 100vh;
     width: 100vw;
-    background-image: url('public/images/ke.webp');
+    background-image: url('/images/ke.webp');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

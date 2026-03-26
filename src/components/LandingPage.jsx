@@ -187,6 +187,10 @@ const LandingPage = () => {
   const [searchDest, setSearchDest] = useState('');
   const [searchInterest, setSearchInterest] = useState('Heritage');
   const [searchType, setSearchType] = useState('Hill Side');
+  
+  // Custom Dropdown Open States
+  const [isInterestOpen, setIsInterestOpen] = useState(false);
+  const [isTypeOpen, setIsTypeOpen] = useState(false);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -298,35 +302,39 @@ const LandingPage = () => {
               </div>
               <div className="form-group">
                 <label>{t.label_interest}</label>
-                <select 
-                  className="form-input"
-                  style={{ cursor: 'pointer', appearance: 'auto' }}
-                  value={searchInterest}
-                  onChange={e => setSearchInterest(e.target.value)}
-                >
-                  <option value="Heritage">Heritage</option>
-                  <option value="Nature">Nature</option>
-                  <option value="Spirituality">Spirituality</option>
-                  <option value="Adventure">Adventure</option>
-                  <option value="Food & Culinary">Food & Culinary</option>
-                  <option value="Wellness">Wellness</option>
-                </select>
+                <div className={`custom-select ${isInterestOpen ? 'active' : ''}`}>
+                  <div className="dropdown-trigger" onClick={() => { setIsInterestOpen(!isInterestOpen); setIsTypeOpen(false); }}>
+                    <span>{searchInterest}</span>
+                    <svg className="dropdown-arrow" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  <div className="dropdown-content">
+                    {['Heritage', 'Nature', 'Spirituality', 'Adventure', 'Food & Culinary', 'Wellness'].map(opt => (
+                      <div key={opt} className="dropdown-option" onClick={() => { setSearchInterest(opt); setIsInterestOpen(false); }}>
+                        {opt}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
               <div className="form-group">
                 <label>{t.label_type}</label>
-                <select 
-                  className="form-input"
-                  style={{ cursor: 'pointer', appearance: 'auto' }}
-                  value={searchType}
-                  onChange={e => setSearchType(e.target.value)}
-                >
-                  <option value="Hill Side">Hill Side</option>
-                  <option value="Lake Side">Lake Side</option>
-                  <option value="Forest">Forest</option>
-                  <option value="Beach">Beach</option>
-                  <option value="Desert">Desert</option>
-                  <option value="City Explorer">City Explorer</option>
-                </select>
+                <div className={`custom-select ${isTypeOpen ? 'active' : ''}`}>
+                  <div className="dropdown-trigger" onClick={() => { setIsTypeOpen(!isTypeOpen); setIsInterestOpen(false); }}>
+                    <span>{searchType}</span>
+                    <svg className="dropdown-arrow" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  <div className="dropdown-content">
+                    {['Hill Side', 'Lake Side', 'Forest', 'Beach', 'Desert', 'City Explorer'].map(opt => (
+                      <div key={opt} className="dropdown-option" onClick={() => { setSearchType(opt); setIsTypeOpen(false); }}>
+                        {opt}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
               <button type="submit" className="search-btn">
                 <span className="btn-text-desktop"><b style={{ fontSize: '1.5rem' }}>&gt;</b></span>

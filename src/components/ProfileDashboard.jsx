@@ -196,7 +196,7 @@ const ProfileDashboard = () => {
         }
         .card-header h2 {
           font-size: 1.5rem;
-          color: #111;
+          color: #000000d1;
           font-weight: 700;
           margin-bottom: 0.5rem;
         }
@@ -468,7 +468,7 @@ const ProfileDashboard = () => {
 
             <div className="pro-group">
               <label>Dream Destinations (Comma Separated)</label>
-              <input type="text" className="pro-input" value={destinations} onChange={e => setDestinations(e.target.value)} placeholder="e.g. Japan, Italy, New Zealand" />
+              <input type="text" className="pro-input" value={destinations} onChange={e => setDestinations(e.target.value)} placeholder="e.g. Manali, Varanasi, Rishikesh" />
             </div>
 
             <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -616,7 +616,7 @@ const ProfileDashboard = () => {
                     {preferenceProfile.completenessScore < 55 && '→ Choose a Travel Style to unlock insights.'}
                     {preferenceProfile.completenessScore >= 55 && preferenceProfile.completenessScore < 80 && '→ Add Core Interests for smarter matches.'}
                     {preferenceProfile.completenessScore >= 80 && preferenceProfile.completenessScore < 100 && '→ Add Dream Destinations to complete.'}
-                    {preferenceProfile.completenessScore === 100 && '✅ Fully calibrated — AI recommendations at maximum.'}
+                    {preferenceProfile.completenessScore === 100 && 'Fully calibrated — AI recommendations at maximum.'}
                   </div>
                 </div>
               </>

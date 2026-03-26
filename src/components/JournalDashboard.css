@@ -259,7 +259,7 @@
 .empty-state p:first-child {
   font-size: 18px;
   font-weight: 600;
-  color: #374151;
+  color: #ffffff;
   margin-bottom: 8px;
 }
 
@@ -270,20 +270,37 @@
 /* Journal Entry Card */
 
 .journal-entry {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: 24px 24px 20px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-left: 5px solid #1b803a;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
 .journal-entry:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
-  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-6px);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.85);
+  border-left-color: #0b5851;
+}
+
+/* Subtle background quote mark for aesthetics */
+.journal-entry::after {
+  content: '❞';
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  font-size: 6rem;
+  color: rgba(27, 128, 58, 0.05);
+  font-family: serif;
+  pointer-events: none;
+  line-height: 1;
 }
 
 .entry-header {
@@ -302,10 +319,12 @@
 }
 
 .entry-header h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0b5851;
   margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
 }
 
 .sentiment-badge {
@@ -325,20 +344,38 @@
 }
 
 .entry-content {
-  color: #4b5563;
-  line-height: 1.6;
-  font-size: 14px;
-  margin: 0 0 16px 0;
+  color: #374151;
+  line-height: 1.7;
+  font-size: 0.95rem;
+  margin: 0 0 20px 0;
   white-space: pre-wrap;
   word-wrap: break-word;
+  /* Handle large messages gracefully */
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 12px;
+  position: relative;
+  z-index: 2; /* Keeps text above pseudo-element */
 }
+
+/* Custom elegant scrollbar inside the card */
+.entry-content::-webkit-scrollbar { width: 5px; }
+.entry-content::-webkit-scrollbar-track { background: transparent; }
+.entry-content::-webkit-scrollbar-thumb {
+  background-color: rgba(27, 128, 58, 0.2);
+  border-radius: 10px;
+}
+.entry-content::-webkit-scrollbar-thumb:hover { background-color: rgba(27, 128, 58, 0.5); }
 
 .entry-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 12px;
-  border-top: 1px solid #f3f4f6;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.15);
+  margin-top: auto; /* Pushes footer to bottom seamlessly */
+  position: relative;
+  z-index: 2;
 }
 
 .sentiment-score {

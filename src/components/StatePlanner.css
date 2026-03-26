@@ -1,10 +1,6 @@
 .state-planner-container {
   min-height: 100vh;
   width: 100vw;
-  background-image: url('https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1776&auto=format&fit=crop'); /* Agra aesthetic */
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
   position: relative;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -15,7 +11,6 @@
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(11, 88, 81, 0.7); /* Deep teal glass */
-  backdrop-filter: blur(12px);
   z-index: 1;
 }
 
@@ -110,6 +105,99 @@
   background: #fff;
 }
 
+/* --- Custom Dropdown Styles for Planner --- */
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  font-size: 0.95rem;
+  color: #111;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.dropdown-trigger:hover, .custom-select.active .dropdown-trigger {
+  outline: none;
+  border-color: #0b5851;
+  box-shadow: 0 0 0 3px rgba(11, 88, 81, 0.1);
+  background: #fff;
+}
+
+.dropdown-arrow {
+  width: 14px;
+  height: 14px;
+  stroke: #6b7280;
+  transition: transform 0.3s ease;
+}
+
+.custom-select.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 8px 0;
+  margin-top: 4px;
+  border: 1px solid #e5e7eb;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Custom Scrollbar for Dropdowns */
+.dropdown-content::-webkit-scrollbar {
+  width: 8px;
+}
+.dropdown-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dropdown-content::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.dropdown-content::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+.dropdown-option {
+  display: block;
+  padding: 10px 16px;
+  color: #4b5563;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-option:hover {
+  background-color: #f3f4f6;
+  color: #0b5851;
+}
+
+/* Show dropdown when active class is present */
+.custom-select.active .dropdown-content {
+  display: block;
+}
+
 .planner-btn {
   width: 100%;
   padding: 1rem;
@@ -142,7 +230,6 @@
   border-radius: 24px;
   padding: 2.5rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(16px);
   min-height: 500px;
 }
 

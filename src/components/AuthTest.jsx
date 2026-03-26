@@ -232,7 +232,7 @@ const AuthTest = () => {
             <input type="text" placeholder="hiking, food, museums" value={editInterests} onChange={(e) => setEditInterests(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} />
             
             <label><strong>Preferred Desinations (comma):</strong></label>
-            <input type="text" placeholder="Japan, Italy" value={editDestinations} onChange={(e) => setEditDestinations(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} />
+            <input type="text" placeholder="Manali, Varanasi" value={editDestinations} onChange={(e) => setEditDestinations(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} />
 
             <button onClick={handleSaveDNA} style={{ marginTop: '0.5rem', padding: '0.5rem', cursor: 'pointer', background: '#1976D2', color: 'white', border: 'none' }}>Save DNA</button>
           </div>
