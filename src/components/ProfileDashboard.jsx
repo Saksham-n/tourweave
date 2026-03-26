@@ -522,7 +522,7 @@ const ProfileDashboard = () => {
           {/* JOURNAL — full width row */}
           <div className="profile-card journal-card profile-card-span-full">
             <div className="card-header">
-              <h2>Memory Journal</h2>
+              <h2>Preference Profile</h2>
               <p>Track your travel memories and emotional journey.</p>
             </div>
 
