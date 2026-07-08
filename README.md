@@ -2,15 +2,6 @@
 
 TourWeave is a collaborative itinerary planning application featuring real-time synchronization, group expense management with OCR receipt parsing, travel journaling, and AI-driven travel insights.
 
----
-
-### 🎓 Academic Project
-* **Institution:** [Insert University/College Name]
-* **Department:** Department of Computer Science & Engineering
-* **Authors:** [Insert Team Members]
-* **Advisor:** [Insert Project Advisor]
-
----
 
 ## 🚀 Core Features
 
